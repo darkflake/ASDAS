@@ -1,7 +1,7 @@
 from tkinter import *
 
 import numpy
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk          # Pillow == PIL
 import image_operations                 # Our Python file with functions for image operations
 
 # Create an instance of Tk which will essentially create a GUI window, and state('zoomed') will launch it in full screen

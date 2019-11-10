@@ -1,5 +1,5 @@
 import numpy as np
-import cv2
+import cv2                  # OpenCV == cv2
 
 '''
 Function to create an PNG image using OpenCV:
