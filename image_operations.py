@@ -22,6 +22,9 @@ def format_save(save_name, x_size, y_size, r_array, g_array, b_array):
         [b_array_form[r, c], g_array_form[r, c], r_array_form[r, c]]
         for r in range(y_size) for c in range(x_size)])
 
+    print(f'min:{np.min(new_image[0])}, max:{np.max(new_image[0])}')
+    print(f'Nan in NDVI : {np.argwhere(np.isnan(new_image[0]))}')
+
     new_image = new_image.astype(dtype='uint8')
     new_image = new_image.reshape((y_size, x_size, 3))      # Reshaping the new_image array to 1600x600x3 (RGB)
     factor = min(1200 / x_size, 600 / y_size)               # Calculating factor to scale down the image.
@@ -43,16 +46,24 @@ Arguments - image_name : To identify the image for saving and previewing the tra
 def transform_image(image_name, r_text, g_text, b_text, set_of_arrays=[], x_size=1600, y_size=600, save=False):
 
     # Splitting the set_of_arrays:
-    R = set_of_arrays[0]
-    G = set_of_arrays[1]
-    B = set_of_arrays[2]
-    NIR = set_of_arrays[3]
-    SWIR = set_of_arrays[4]
+    R = set_of_arrays[0].astype(dtype='float')
+    G = set_of_arrays[1].astype(dtype='float')
+    B = set_of_arrays[2].astype(dtype='float')
+    NIR = set_of_arrays[3].astype(dtype='float')
+    SWIR = set_of_arrays[4].astype(dtype='float')
 
     # Calculating pre-defined indexes so that they can be passed directly via GUI:
-    NDVI = (NIR - R)/(NIR + R)          # Normalized Difference Vegetation Index
-    NDWI = (NIR - SWIR)/(NIR + SWIR)    # Normalized Difference Water Index
-    NDBI = (SWIR - NIR)/(SWIR + NIR)    # Normalized Difference Build-U[ Index
+    NDVI = (((NIR - R) / (NIR + R))+1)*127.5        # Normalized Difference Vegetation Index
+    NDWI = ((NIR - SWIR)/(NIR + SWIR)+1)*127.5    # Normalized Difference Water Index
+    NDBI = ((SWIR - NIR)/(SWIR + NIR)+1)*127.5    # Normalized Difference Build-Up Index
+
+    print(f'Nan in NDVI : {np.argwhere(np.isnan(NDVI))}')
+    print(f'Nan in R : {np.argwhere(np.isnan(R))}')
+    print(f'Nan in NIR : {np.argwhere(np.isnan(NIR))}')
+
+    print(f'min NDVI:{np.amin(NDVI)}, max NDVI:{np.amax(NDVI)}')
+    print(f'min NDWI:{np.amin(NDWI)}, max NDVI:{np.amax(NDWI)}')
+    print(f'min NDBI:{np.amin(NDBI)}, max NDVI:{np.amax(NDBI)}')
 
     # ---------------------------------------------------
 
