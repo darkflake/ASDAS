@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="">
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="added script to play with GEE">
+      <change afterPath="$PROJECT_DIR$/ground_verification/chromedriver.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ground_verification/ground_verification.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ground_verification/hunter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -9,6 +12,9 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="ASDAS_GUI" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -21,8 +27,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1YCuzmdykxOalDYOEamGVsAwW4m" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -38,7 +47,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.play_gee">
+  <component name="RunManager" selected="Python.hunter">
     <configuration name="gui" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ASDAS_GUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -52,6 +61,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gui.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="hunter" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="ASDAS_GUI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ground_verification" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ground_verification/hunter.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -84,9 +114,11 @@
     <list>
       <item itemvalue="Python.gui" />
       <item itemvalue="Python.play_gee" />
+      <item itemvalue="Python.hunter" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.hunter" />
         <item itemvalue="Python.play_gee" />
         <item itemvalue="Python.gui" />
       </list>
@@ -138,7 +170,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573389462848</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="added script to play with GEE">
+      <created>1582459552946</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1582459552946</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -153,9 +192,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Initial Commit" />
     <MESSAGE value="Updated GUI" />
     <MESSAGE value="added requirments.txt" />
-    <option name="LAST_COMMIT_MESSAGE" value="added requirments.txt" />
+    <MESSAGE value="added script to play with GEE" />
+    <option name="LAST_COMMIT_MESSAGE" value="added script to play with GEE" />
   </component>
 </project>
