@@ -4,18 +4,19 @@ import csv
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from pynput.mouse import Button, Controller, Listener
-
+from pynput.mouse import Button, Controller
+from pynput.mouse import Listener as ml
+from pynput.keyboard import Key
+from pynput.keyboard import Listener as kl
 
 chrome_options = Options()
 driver = webdriver.Chrome()
 
+key_pressed = [0]
 positions = []
-classes_dictionary = {'water': [],
-                      'build-up areas': []}
 
 mouse_controller = Controller()
-driver.get("https://www.google.co.in/maps/@18.5339901,73.8642073,15.5z")
+driver.get("https://www.google.co.in/maps/@18.5308356,73.8618938,15.21z")
 
 
 def on_click(x, y, button, pressed):
@@ -23,68 +24,96 @@ def on_click(x, y, button, pressed):
         positions.append((x, y))
 
 
-def recorder():
-    counter = 1
-    for key in classes_dictionary.keys():
-        print(f"GROUND VERIFICATION record generation for class: {key}")
-        print("First click the 'blank spot' and then 5 consecutive clicks for recording Class Data")
+def on_press(key):
+    if key == Key.caps_lock:
+        key_pressed[0] = 1
+    elif key == Key.esc:
+        key_pressed[0] = 2
 
-        listener = Listener(on_click=on_click)
-        listener.start()
-        while len(positions) != counter*6:
+
+def recorder():
+    while True:
+        try:
+            satellite = driver.find_element_by_xpath('//*[@id="minimap"]/div/div[2]/button')
+            break
+        except Exception:
+            time.sleep(0.1)
             continue
-        listener.stop()
-        print("Actions Recorded !\n")
-        counter += 1
+    satellite.click()
+
+    class_label = input("Enter the class label for GROUND VERIFICATION record generation : ")
+    print("Press CAPS LOCK to start and ESC to end the recording.")
+
+    key_listener = kl(on_press=on_press)
+    mouse_listener = ml(on_click=on_click)
+    is_pressed = False
+
+    key_listener.start()
+
+    while key_pressed[0] == 0 or key_pressed[0] == 1:
+        time.sleep(1)
+        if key_pressed[0] == 1 and not is_pressed:
+            mouse_listener.start()
+            print("Starting the recorder")
+            is_pressed = True
+            continue
+        if key_pressed[0] == 2 and is_pressed:
+            mouse_listener.stop()
+            key_listener.stop()
+            print("\nActions recorded !")
+            break
+        else:
+            continue
+    return class_label
 
 
 def player():
-    for key in classes_dictionary.keys():
-        lat_long_list = []
-        print(f"\nRECORDING DATA : class {key}\n")
-        blank = positions.pop(0)
+    lat_long_list = []
+    print(f"\nRecording Data Now\n")
+    blank = positions.pop(0)
+    mouse_listener = ml(on_click=on_click)
+    mouse_listener.start()
 
-        for i in range(0, 5):
-            pos = positions.pop(0)
+    for i in range(len(positions)):
+        pos = positions.pop(0)
 
-            time.sleep(1)
+        time.sleep(1)
 
-            mouse_controller.position = blank
-            mouse_controller.press(Button.left)
-            mouse_controller.release(Button.left)
+        mouse_controller.position = blank
+        mouse_controller.press(Button.left)
+        mouse_controller.release(Button.left)
 
-            time.sleep(1)
-            mouse_controller.position = pos
-            mouse_controller.press(Button.left)
-            mouse_controller.release(Button.left)
+        time.sleep(1)
+        mouse_controller.position = pos
+        mouse_controller.press(Button.left)
+        mouse_controller.release(Button.left)
 
-            time.sleep(2)
-            lat_long = driver.find_element_by_xpath('//*[@id="reveal-card"]/div/div[2]/button[2]').get_attribute("aria-label")
-            print(lat_long)
-            lat_long_list.append(lat_long)
+        time.sleep(2)
+        lat_long = driver.find_element_by_xpath('//*[@id="reveal-card"]/div/div[2]/button[2]').get_attribute("aria-label")
+        coordinates = lat_long.split(",")
+        lat_long_list.append(coordinates)
+        mouse_listener.stop()
 
-        classes_dictionary[key] = classes_dictionary.get(key, []) + lat_long_list
-    time.sleep(2)
+    return lat_long_list
 
 
-def create_csv(dictionary={}):
+def create_csv():
+    class_label = recorder()
+    lat_long_list = player()
     data = []
-    values_list = []
-    with open('ground_verification.csv', 'w') as csvfile:
-        filewriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        filewriter.writerow(['lat', 'long', 'class'])
+    entry_list = []
 
-        for key, values in dictionary.items():
-            for value in values:
-                value_split = value.split(",")
-                values_list.extend(value_split)
+    with open('ground_verification.csv', 'w', newline='') as csvfile:
+        filewriter = csv.writer(csvfile, delimiter=',')
+        filewriter.writerow(['coordinates', 'class'])
 
-            for index in range(0, len(values_list), 2):
-                data.append([values_list[index], values_list[index + 1], key])
-            filewriter.writerows(data)
+        for entry in lat_long_list:
+            data.clear()
+            data.append(entry)
+            data.append(class_label)
+            entry_list.append(data)
+        filewriter.writerows(entry_list)
+    print("Done !")
 
 
-recorder()
-player()
-print(classes_dictionary)
-create_csv(classes_dictionary)
+create_csv()
