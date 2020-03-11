@@ -9,6 +9,7 @@ from pynput.mouse import Listener as ml
 from pynput.keyboard import Key
 from pynput.keyboard import Listener as kl
 
+
 chrome_options = Options()
 driver = webdriver.Chrome()
 
@@ -16,8 +17,11 @@ key_pressed = [0]
 positions = []
 
 mouse_controller = Controller()
-driver.get("https://www.google.co.in/maps/@18.5308356,73.8618938,15.21z")
-
+# driver.get("https://www.google.com/maps/@18.6585786,73.4097304,14z")      # vegetation
+# driver.get("https://www.google.com/maps/@18.606564,73.8418629,15.35z")    # water
+# driver.get("https://www.google.com/maps/@18.6673585,73.6474623,14z")      # barren land
+# driver.get("https://www.google.com/maps/@18.6043872,73.7771501,17.22z")      # settlements
+driver.get("https://www.google.com/maps/@18.68307,74.0527534,14.44z")      # agriculture
 
 def on_click(x, y, button, pressed):
     if pressed:
@@ -25,7 +29,7 @@ def on_click(x, y, button, pressed):
 
 
 def on_press(key):
-    if key == Key.caps_lock:
+    if key == Key.tab:
         key_pressed[0] = 1
     elif key == Key.esc:
         key_pressed[0] = 2
@@ -42,7 +46,7 @@ def recorder():
     satellite.click()
 
     class_label = input("Enter the class label for GROUND VERIFICATION record generation : ")
-    print("Press CAPS LOCK to start and ESC to end the recording.")
+    print("Press TAB to start and ESC to end the recording.")
 
     key_listener = kl(on_press=on_press)
     mouse_listener = ml(on_click=on_click)
@@ -100,20 +104,19 @@ def player():
 def create_csv():
     class_label = recorder()
     lat_long_list = player()
-    data = []
-    entry_list = []
 
-    with open('ground_verification.csv', 'w', newline='') as csvfile:
+
+    file_name = 'ground_verification_' + class_label + '.csv'
+    with open(file_name, 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',')
-        filewriter.writerow(['coordinates', 'class'])
+        filewriter.writerow(['lat', 'long', 'class'])
 
-        for entry in lat_long_list:
-            data.clear()
-            data.append(entry)
-            data.append(class_label)
-            entry_list.append(data)
-        filewriter.writerows(entry_list)
+        for pair in lat_long_list:
+            pair.append(class_label)
+            filewriter.writerow(pair)
+
     print("Done !")
+
 
 
 create_csv()
