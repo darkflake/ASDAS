@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="added script to play with GEE">
-      <change afterPath="$PROJECT_DIR$/ground_verification/chromedriver.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ground_verification/ground_verification.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ground_verification/hunter.py" afterDir="false" />
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="ground verification support">
+      <change afterPath="$PROJECT_DIR$/ground_verification/B4-B8 _ 1-1_23-2_vegetation.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ground_verification/ground_verification_vegetation.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ground_verification/merger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -47,7 +47,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.hunter">
+  <component name="RunManager" selected="Python.merger">
     <configuration name="gui" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ASDAS_GUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -90,6 +90,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="merger" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="ASDAS_GUI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ground_verification" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ground_verification/merger.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="play_gee" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ASDAS_GUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -115,9 +136,11 @@
       <item itemvalue="Python.gui" />
       <item itemvalue="Python.play_gee" />
       <item itemvalue="Python.hunter" />
+      <item itemvalue="Python.merger" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.merger" />
         <item itemvalue="Python.hunter" />
         <item itemvalue="Python.play_gee" />
         <item itemvalue="Python.gui" />
@@ -177,15 +200,27 @@
       <option name="project" value="LOCAL" />
       <updated>1582459552946</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="ground verification support">
+      <created>1582477795774</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1582477795774</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.csv" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -197,6 +232,7 @@
     <MESSAGE value="Updated GUI" />
     <MESSAGE value="added requirments.txt" />
     <MESSAGE value="added script to play with GEE" />
-    <option name="LAST_COMMIT_MESSAGE" value="added script to play with GEE" />
+    <MESSAGE value="ground verification support" />
+    <option name="LAST_COMMIT_MESSAGE" value="ground verification support" />
   </component>
 </project>
