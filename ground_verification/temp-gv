@@ -19,6 +19,11 @@ mouse_controller = Controller()
 driver.get("https://www.google.co.in/maps/@18.5308356,73.8618938,15.21z")
 
 
+def on_move(x, y):
+    print('Pointer moved to {0}'.format(
+        (x, y)))
+
+
 def on_click(x, y, button, pressed):
     if pressed:
         positions.append((x, y))
@@ -52,6 +57,7 @@ def recorder():
 
     while key_pressed[0] == 0 or key_pressed[0] == 1:
         time.sleep(1)
+        print(key_pressed[0])
         if key_pressed[0] == 1 and not is_pressed:
             mouse_listener.start()
             print("Starting the recorder")
@@ -60,7 +66,7 @@ def recorder():
         if key_pressed[0] == 2 and is_pressed:
             mouse_listener.stop()
             key_listener.stop()
-            print("\nActions recorded !")
+            print("Actions recorded !\n")
             break
         else:
             continue
@@ -68,10 +74,12 @@ def recorder():
 
 
 def player():
+    print("Positions :")
+    print(positions)
     lat_long_list = []
-    print(f"\nRecording Data Now\n")
+    print(f"\nRECORDING DATA \n")
     blank = positions.pop(0)
-    mouse_listener = ml(on_click=on_click)
+    mouse_listener = ml(on_click=on_click, on_move=on_move)
     mouse_listener.start()
 
     for i in range(len(positions)):
@@ -80,18 +88,22 @@ def player():
         time.sleep(1)
 
         mouse_controller.position = blank
+        time.sleep(2)
+
         mouse_controller.press(Button.left)
         mouse_controller.release(Button.left)
 
         time.sleep(1)
         mouse_controller.position = pos
+        time.sleep(2)
         mouse_controller.press(Button.left)
         mouse_controller.release(Button.left)
 
         time.sleep(2)
         lat_long = driver.find_element_by_xpath('//*[@id="reveal-card"]/div/div[2]/button[2]').get_attribute("aria-label")
-        coordinates = lat_long.split(",")
-        lat_long_list.append(coordinates)
+        lat, long = lat_long.split(",")
+        lat_long_list.append(lat)
+        lat_long_list.append(long)
         mouse_listener.stop()
 
     return lat_long_list
@@ -101,19 +113,14 @@ def create_csv():
     class_label = recorder()
     lat_long_list = player()
     data = []
-    entry_list = []
 
-    with open('ground_verification.csv', 'w', newline='') as csvfile:
-        filewriter = csv.writer(csvfile, delimiter=',')
-        filewriter.writerow(['coordinates', 'class'])
+    with open('ground_verification.csv', 'w') as csvfile:
+        filewriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        filewriter.writerow(['lat', 'long', 'class'])
 
-        for entry in lat_long_list:
-            data.clear()
-            data.append(entry)
-            data.append(class_label)
-            entry_list.append(data)
-        filewriter.writerows(entry_list)
-    print("Done !")
+    for index in range(0, len(lat_long_list), 2):
+        data.append([lat_long_list[index], lat_long_list[index + 1], class_label])
+        filewriter.writerows(data)
 
 
 create_csv()
