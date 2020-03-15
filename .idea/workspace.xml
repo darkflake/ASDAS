@@ -1,12 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="ground verification support">
-      <change afterPath="$PROJECT_DIR$/interpolation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/savitsky_golay.py" afterDir="false" />
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Support for Interpolation + Savitsy-Golay Filter">
+      <change afterPath="$PROJECT_DIR$/data_2019/1546580631000-1547012631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1547012631000-1547444631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1547444631000-1547876631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1547876631000-1548308631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1548308631000-1548740631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1548740631000-1549172631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1549172631000-1549604631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1549604631000-1550036631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1550036631000-1550468631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1550468631000-1550900631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1550900631000-1551332631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1551332631000-1551764631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1551764631000-1552196631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1552196631000-1552628631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1552628631000-1553060631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1553060631000-1553492631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1553492631000-1553924631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1553924631000-1554356631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1554356631000-1554788631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1554788631000-1555220631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1555220631000-1555652631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1555652631000-1556084631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1556084631000-1556516631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1556516631000-1556948631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1556948631000-1557380631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1557380631000-1557812631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1557812631000-1558244631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1558244631000-1558676631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1558676631000-1559108631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1559108631000-1559540631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1559540631000-1559972631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1559972631000-1560404631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1560404631000-1560836631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1560836631000-1561268631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1561268631000-1561700631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1561700631000-1562132631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1562132631000-1562564631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1562564631000-1562996631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1562996631000-1563428631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1563428631000-1563860631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1563860631000-1564292631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1564292631000-1564724631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1564724631000-1565156631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1565156631000-1565588631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1565588631000-1566020631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1566020631000-1566452631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1566452631000-1566884631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1566884631000-1567316631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1567316631000-1567748631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1567748631000-1568180631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1568180631000-1568612631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1568612631000-1569044631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1569044631000-1569476631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1569476631000-1569908631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1569908631000-1570340631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1570340631000-1570772631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1570772631000-1571204631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1571204631000-1571636631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1571636631000-1572068631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1572068631000-1572500631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1572500631000-1572932631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1572932631000-1573364631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1573364631000-1573796631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1573796631000-1574228631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1574228631000-1574660631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1574660631000-1575092631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1575092631000-1575524631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1575524631000-1575956631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1575956631000-1576388631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1576388631000-1576820631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1576820631000-1577252631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1577252631000-1577684631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/1577684631000-1578116631000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/Blue.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/Green.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/NDVI.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/NIR.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/Red.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_preprocessing/combiner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ground_verification/B4-B8 _ 1-1_23-2_vegetation.csv" beforeDir="false" afterPath="$PROJECT_DIR$/ground_verification/B4-B8 _ 1-1_23-2_vegetation.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ground_verification/merger.py" beforeDir="false" afterPath="$PROJECT_DIR$/ground_verification/merger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ground_verification/chromedriver.exe" beforeDir="false" afterPath="$PROJECT_DIR$/ground_verification/chromedriver.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interpolation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/interpolation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/savitsky_golay.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/savitsky_golay.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,6 +114,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Sudhanshu\pycharm\ground_verifications\data_preprocessing" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -48,7 +131,49 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.interpolation">
+  <component name="RunManager" selected="Python.combiner">
+    <configuration name="collector" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="ASDAS_GUI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/collector.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="combiner" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="ASDAS_GUI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/data_preprocessing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data_preprocessing/combiner.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="hunter" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ASDAS_GUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -82,49 +207,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/interpolation.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="merger" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="ASDAS_GUI" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ground_verification" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ground_verification/merger.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="play_gee" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="ASDAS_GUI" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/play_gee.py" />
+      <option name="SCRIPT_NAME" value="D:\Sudhanshu\pycharm\ground_verifications\data_preprocessing\interpolation.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -145,7 +228,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/savitsky_golay.py" />
+      <option name="SCRIPT_NAME" value="D:\Sudhanshu\pycharm\ground_verifications\data_preprocessing\savitsky_golay.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -155,19 +238,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.play_gee" />
       <item itemvalue="Python.hunter" />
-      <item itemvalue="Python.merger" />
       <item itemvalue="Python.interpolation" />
       <item itemvalue="Python.savitsky_golay" />
+      <item itemvalue="Python.collector" />
+      <item itemvalue="Python.combiner" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.combiner" />
+        <item itemvalue="Python.collector" />
+        <item itemvalue="Python.hunter" />
         <item itemvalue="Python.interpolation" />
         <item itemvalue="Python.savitsky_golay" />
-        <item itemvalue="Python.merger" />
-        <item itemvalue="Python.hunter" />
-        <item itemvalue="Python.play_gee" />
       </list>
     </recent_temporary>
   </component>
@@ -231,7 +314,14 @@
       <option name="project" value="LOCAL" />
       <updated>1582477795774</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Support for Interpolation + Savitsy-Golay Filter">
+      <created>1584122862143</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1584122862143</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -257,6 +347,7 @@
     <MESSAGE value="added requirments.txt" />
     <MESSAGE value="added script to play with GEE" />
     <MESSAGE value="ground verification support" />
-    <option name="LAST_COMMIT_MESSAGE" value="ground verification support" />
+    <MESSAGE value="Support for Interpolation + Savitsy-Golay Filter" />
+    <option name="LAST_COMMIT_MESSAGE" value="Support for Interpolation + Savitsy-Golay Filter" />
   </component>
 </project>
