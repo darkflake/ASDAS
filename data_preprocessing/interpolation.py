@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from savitsky_golay import savitzky_golay
+from data_preprocessing.savitsky_golay import savitzky_golay
 import numpy as np
 
 
