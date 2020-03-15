@@ -40,7 +40,7 @@ def graph(data_y, data_x, interpolated_data=None):
 
 
 # Play :
-basic_y = [10, 20, 40, 60, 70, 30, 20, 40, 80, 110, 160, 120, 100, 180, 200]
-basic_x = [str(d)+"/1" for d in range(1, 16)]
-
-interpolate(basic_y, basic_x, ['5/1', '11/1', '11/1', '14/1'])
+# basic_y = [10, 20, 40, 60, 70, 30, 20, 40, 80, 110, 160, 120, 100, 180, 200]
+# basic_x = [str(d)+"/1" for d in range(1, 16)]
+#
+# interpolate(basic_y, basic_x, ['5/1', '11/1', '11/1', '14/1'])
