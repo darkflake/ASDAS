@@ -1,3 +1,7 @@
+import pandas as pd
+import numpy as np
+
+
 def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     r"""Smooth (and optionally differentiate) data with a Savitzky-Golay filter.
     The Savitzky-Golay filter removes high frequency noise from data.
@@ -62,6 +66,29 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     y = np.concatenate((firstvals, y, lastvals))
     return np.convolve(m[::-1], y, mode='valid')
 
+
+def apply_savgol(data_csv: pd.DataFrame, index: int, window: int, order: int):
+    r"""
+        Apply Savitsky Golay filter to every row of the data frame.
+
+    :param data_csv: Input data in form of Pandas.DataFrame
+    :param index: index of row apply savitsky-golay
+    :param window: Window size for SavGol
+    :param order: Order of polynomial for SavGol
+    :return: Output data in form of Pandas.DataFrame
+    """
+    new_data_csv = data_csv.copy()
+
+    old_row = data_csv.values.tolist()[index][2:]
+    new_row = data_csv.values.tolist()[index][:2]
+
+    sav = savitzky_golay(y=np.asarray(old_row), window_size=window, order=order)
+    new_row.extend([x for x in sav.tolist()])
+
+    new_data_csv.loc[index] = new_row
+
+    print("Applied Savitsky-Golay.")
+    return new_data_csv
 
 # t = np.linspace(-4, 4, 50)
 # y = np.exp(-t ** 2) + np.random.normal(0, 0.05, t.shape)
