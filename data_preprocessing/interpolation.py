@@ -2,35 +2,43 @@ import matplotlib.pyplot as plt
 from data_preprocessing.savitsky_golay import savitzky_golay
 import numpy as np
 
-labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep', '02 Oct', '01 Nov', '01 Dec']
-indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
 
+def interpolate(raw_data: list, x_values: str, interpolation_points: list, title: str, band: str, display=False, apply_filter=False):
+    interpolated_data = raw_data.copy()                                                                                 # Retain original data
 
-def interpolate(raw_data: list, x_values: str, interpolation_points: list, title: str, band: str):
-    interpolated_data = raw_data.copy()                                              # Retain original data:
-
-    for x, y in list(zip(interpolation_points, interpolation_points[1:]))[::2]:      # Read interpolation points from list
+    for x, y in list(zip(interpolation_points, interpolation_points[1:]))[::2]:                                         # Read interpolation points
         x, y = x_values.index(x)-2, x_values.index(y)-2
-        slope = (raw_data[y] - raw_data[x])/(y-x)                                    # Slope of line in the two points
+        slope = (raw_data[y] - raw_data[x])/(y-x)                                                                       # Slope of line in the two points
 
-        for i in range(x+1, y):                                                      # Calculate Y value for every point
-            interpolated_data[i] = interpolated_data[x] + (i-x)*slope                # y = mx + c
+        for i in range(x+1, y):                                                                                         # Calculate Y value for every point
+            interpolated_data[i] = interpolated_data[x] + (i-x)*slope                                                   # y = mx + c
 
-    graph(raw_data, band=band, title=title, interpolated_data=interpolated_data)                # Render original + interpolated data
+    if display:
+        graph(raw_data, band=band, title=title, interpolated_data=interpolated_data, savgol=apply_filter)               # Render graphs
+
+    return interpolated_data
 
 
 # Render graphs:
-def graph(data_y, title='Data', band="", interpolated_data=None):
+def graph(data_y, title='Data', band="", interpolated_data=None, savgol=False):
+    labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep', '02 Oct',
+              '01 Nov', '01 Dec']
+    indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
+
     plt.plot(data_y, '-go', label='Actual Data', alpha=0.3)
 
     if interpolated_data:
         plt.plot(interpolated_data, ':r', label='Interpolated Data', alpha=1)
-        sav = savitzky_golay(y=np.asarray(interpolated_data), window_size=9, order=4)
+        if savgol:
+            sav = savitzky_golay(y=np.asarray(interpolated_data), window_size=9, order=4)
 
     else:
-        sav = savitzky_golay(y=np.asarray(data_y), window_size=7, order=3)
+        if savgol:
+            sav = savitzky_golay(y=np.asarray(data_y), window_size=7, order=3)
 
-    # plt.plot(sav, '--b', label='SavGol Filter')
+    if savgol:
+        plt.plot(sav, '--b', label='SavGol Filter')
+
     plt.xlabel('2019')
     plt.ylabel(f'Band Value ({band})')
     plt.title(f"Pixel: {title}")

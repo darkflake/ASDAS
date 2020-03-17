@@ -6,8 +6,7 @@ from data_preprocessing.interpolation import interpolate, graph
 # Select Band and Data Point:
 title = input("Band to plot : ")
 pixel_index = int(input("Pixel Index : "))
-input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{title}.csv")
-
+input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{title}.csv")
 
 # print(input_csv.columns.tolist())                   Get list of columns
 
@@ -26,11 +25,11 @@ input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{
 # Print Min & Max values for the selected data point:
 print(f"Min value : {min(input_csv.values.tolist()[pixel_index][2:])} , Max value : {max(input_csv.values.tolist()[pixel_index][2:])}")
 
-
 # Play:
 # graph(data_y=input_csv.values.tolist()[pixel_index][2:], band=title, title=str(pixel_index))
 
-interpolate(raw_data=input_csv.values.tolist()[pixel_index][2:], x_values=input_csv.columns.tolist(), band=title,
-            title=str(pixel_index), interpolation_points=['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23',
-                                                          '2019-08-23', '2019-09-22', '2019-09-22', '2019-10-02',
-                                                          '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31'])
+interpolated_data = interpolate(raw_data=input_csv.values.tolist()[pixel_index][2:], display=True, apply_filter=False,
+                                x_values=input_csv.columns.tolist(), band=title, title=str(pixel_index),
+                                interpolation_points=['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23',
+                                                      '2019-08-23', '2019-09-22', '2019-09-22', '2019-10-02',
+                                                      '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31'])
