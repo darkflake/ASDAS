@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Automation for downloading CSV from GEE">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Modularity in interpolation and graph functions">
+      <change afterPath="$PROJECT_DIR$/data_preprocessing/gatherer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ASDAS_GUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ASDAS_GUI.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -311,14 +313,7 @@
       <option name="project" value="LOCAL" />
       <updated>1584430187474</updated>
     </task>
-    <task id="LOCAL-00019" summary="Automation for downloading CSV from GEE">
-      <created>1584456392153</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1584456392153</updated>
-    </task>
-    <option name="localTasksCounter" value="20" />
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -355,7 +350,6 @@
     <MESSAGE value="Added comments" />
     <MESSAGE value="Updated directory hierarchy structure" />
     <MESSAGE value="Modularity in interpolation and graph functions" />
-    <MESSAGE value="Automation for downloading CSV from GEE" />
-    <option name="LAST_COMMIT_MESSAGE" value="Automation for downloading CSV from GEE" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modularity in interpolation and graph functions" />
   </component>
 </project>
