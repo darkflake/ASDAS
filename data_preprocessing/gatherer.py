@@ -1,4 +1,4 @@
-''' Created to control the clicks of the mouse to gather data from GEE'''
+""" Created to control the clicks of the mouse to gather data from GEE"""
 
 from pynput.mouse import Button, Controller
 import time

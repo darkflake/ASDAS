@@ -162,8 +162,8 @@
     <list>
       <item itemvalue="Python.collector" />
       <item itemvalue="Python.combiner" />
-      <item itemvalue="Python.main" />
       <item itemvalue="Python.interpolation (1)" />
+      <item itemvalue="Python.main" />
       <item itemvalue="Python.nan" />
     </list>
     <recent_temporary>
