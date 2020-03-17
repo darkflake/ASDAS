@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Handling missing value support">
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Modularity in interpolation and graph functions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_2019/csv/Blue.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data_2019/csv/Blue.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_2019/csv/Green.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data_2019/csv/Green.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_2019/csv/NDVI.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data_2019/csv/NDVI.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_2019/csv/NIR.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data_2019/csv/NIR.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_2019/csv/Red.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data_2019/csv/Red.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preprocessing/interpolation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/interpolation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preprocessing/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preprocessing/savitsky_golay.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/savitsky_golay.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -176,9 +169,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.combiner" />
         <item itemvalue="Python.nan" />
         <item itemvalue="Python.interpolation (1)" />
+        <item itemvalue="Python.combiner" />
         <item itemvalue="Python.collector" />
       </list>
     </recent_temporary>
@@ -320,14 +313,7 @@
       <option name="project" value="LOCAL" />
       <updated>1584430187474</updated>
     </task>
-    <task id="LOCAL-00019" summary="Handling missing value support">
-      <created>1584434243202</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1584434243202</updated>
-    </task>
-    <option name="localTasksCounter" value="20" />
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -364,7 +350,6 @@
     <MESSAGE value="Added comments" />
     <MESSAGE value="Updated directory hierarchy structure" />
     <MESSAGE value="Modularity in interpolation and graph functions" />
-    <MESSAGE value="Handling missing value support" />
-    <option name="LAST_COMMIT_MESSAGE" value="Handling missing value support" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modularity in interpolation and graph functions" />
   </component>
 </project>
