@@ -37,10 +37,10 @@ def fix_nan(input_data: pd.DataFrame):
 
 
 def get_data():
-    # name_of_band = input("Band to plot : ")
-    # pixel_index = int(input("Pixel Index : "))
-    name_of_band = 'NDVI'
-    pixel_index = 0
+    name_of_band = input("Band to plot : ")
+    pixel_index = int(input("Pixel Index : "))
+    # name_of_band = 'NDVI'
+    # pixel_index = 0
 
     input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_band}.csv")  # Get csv
     return name_of_band, pixel_index, input_csv
@@ -74,12 +74,13 @@ interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', 
                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
 
 band_name, index, csv = get_data()
+
 no_nan_csv = fix_nan(csv)
 
 interpolated_csv = apply_interpolation(data_csv=no_nan_csv, index=index, interpolation_points=interpolation_points)
 
 filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
-#
+
 # write_csv(filtered_csv, f"filtered-{band_name}")
 
 display(input_csv=no_nan_csv, pixel_index=index, name_of_band=band_name, do_interpolate=False, apply_filter=False,
