@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="updated csv">
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="indentation changes">
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preprocessing/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/processing/signal_matching.py" beforeDir="false" afterPath="$PROJECT_DIR$/processing/signal_matching.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,7 +54,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.combiner">
+  <component name="RunManager" selected="Python.main">
     <configuration name="combiner" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ASDAS_GUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -166,9 +169,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.combiner" />
         <item itemvalue="Python.gatherer" />
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.nan" />
         <item itemvalue="Python.interpolation (1)" />
       </list>
@@ -353,7 +356,21 @@
       <option name="project" value="LOCAL" />
       <updated>1584616258322</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary=".idea">
+      <created>1584616520790</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1584616520790</updated>
+    </task>
+    <task id="LOCAL-00026" summary="indentation changes">
+      <created>1584616534957</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1584616534957</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -392,8 +409,9 @@
     <MESSAGE value="Modularity in interpolation and graph functions" />
     <MESSAGE value="idea changes" />
     <MESSAGE value="Data for Forests Class" />
-    <MESSAGE value=".idea" />
     <MESSAGE value="updated csv" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated csv" />
+    <MESSAGE value=".idea" />
+    <MESSAGE value="indentation changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="indentation changes" />
   </component>
 </project>
