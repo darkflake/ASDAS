@@ -1,8 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Intellij updates">
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Updated directory structure">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1546580631000-1547012631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1547012631000-1547444631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1547444631000-1547876631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1547876631000-1548308631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1548308631000-1548740631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1548740631000-1549172631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1549172631000-1549604631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1549604631000-1550036631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1550036631000-1550468631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1550468631000-1550900631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1550900631000-1551332631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1551332631000-1551764631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1551764631000-1552196631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1552196631000-1552628631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1552628631000-1553060631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1553060631000-1553492631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1553492631000-1553924631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1553924631000-1554356631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1554356631000-1554788631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1554788631000-1555220631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1555220631000-1555652631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1555652631000-1556084631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1556084631000-1556516631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1556516631000-1556948631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1556948631000-1557380631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1557380631000-1557812631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1557812631000-1558244631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1558244631000-1558676631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1558676631000-1559108631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1559108631000-1559540631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1559540631000-1559972631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1559972631000-1560404631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1560404631000-1560836631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1560836631000-1561268631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1561268631000-1561700631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1561700631000-1562132631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1562132631000-1562564631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1562564631000-1562996631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1562996631000-1563428631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1563428631000-1563860631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1563860631000-1564292631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1564292631000-1564724631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1564724631000-1565156631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1565156631000-1565588631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1565588631000-1566020631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1566020631000-1566452631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1566452631000-1566884631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1566884631000-1567316631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1567316631000-1567748631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1567748631000-1568180631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1568180631000-1568612631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1568612631000-1569044631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1569044631000-1569476631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1569476631000-1569908631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1569908631000-1570340631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1570340631000-1570772631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1570772631000-1571204631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1571204631000-1571636631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1571636631000-1572068631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1572068631000-1572500631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1572500631000-1572932631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1572932631000-1573364631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1573364631000-1573796631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1573796631000-1574228631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1574228631000-1574660631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1574660631000-1575092631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1575092631000-1575524631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1575524631000-1575956631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1575956631000-1576388631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1576388631000-1576820631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1576820631000-1577252631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1577252631000-1577684631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/1577684631000-1578116631000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/Blue.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/Green.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/NDVI.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/NIR.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_2019/csv/Red.csv" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,6 +112,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Sudhanshu\pycharm\ground_verifications\processing" />
+      <recent name="D:\Sudhanshu\pycharm\ground_verifications\Image_Play" />
       <recent name="D:\Sudhanshu\pycharm\ground_verifications\data_2019\graphs" />
       <recent name="D:\Sudhanshu\pycharm\ground_verifications\data_2019\csv" />
       <recent name="D:\Sudhanshu\pycharm\ground_verifications\data_preprocessing" />
@@ -318,7 +398,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584458370312</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Updated directory structure">
+      <created>1584607263338</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1584607263338</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -356,6 +443,7 @@
     <MESSAGE value="Updated directory hierarchy structure" />
     <MESSAGE value="Modularity in interpolation and graph functions" />
     <MESSAGE value="Intellij updates" />
-    <option name="LAST_COMMIT_MESSAGE" value="Intellij updates" />
+    <MESSAGE value="Updated directory structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated directory structure" />
   </component>
 </project>
