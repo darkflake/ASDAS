@@ -129,6 +129,4 @@ def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str):
 # display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=False, apply_filter=False,
 #         interpolate_points=interpolation_points)
 
-# _____________________________________________________________________________________________________________________
-# print(no_nan_csv.columns.tolist())                   Get list of columns
 
