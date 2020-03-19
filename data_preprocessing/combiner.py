@@ -2,25 +2,23 @@ import os
 import pandas as pd
 from datetime import datetime
 
-lat_long_list = []
-bands_List = ["Blue", "Green", "Red", "NIR", "NDVI", "SWIR", "SCL"]
+
+def create_new_csv():
+    lat_long_list = []
+    bands_list = ["Blue", "Green", "Red", "NIR", "NDVI", "SWIR", "SCL"]
+    csv_for_pos = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/1546580631000-1547012631000.csv")
+    geo_frame = pd.DataFrame(csv_for_pos['.geo'])
+
+    for row in geo_frame.iterrows():
+        long, lat = (row[1][0][31:-3]).split(",")
+        lat_long_list.append([lat, long])
+
+    new_geo_df = pd.DataFrame(data=lat_long_list, columns=["Lat", "Long"])
+    for band in bands_list:
+        new_geo_df.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/" + band + ".csv", index=False)
 
 
-'''
-CODE TO CREATE BASIC BAND CSVs WITH LAT-LONG FOR 30 POINTS :
-# -------------------------------------------------------------
-csv_for_pos = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/1546580631000-1547012631000.csv")
-geo_frame = pd.DataFrame(csv_for_pos['.geo'])
-
-for row in geo_frame.iterrows():
-    long, lat = (row[1][0][31:-3]).split(",")
-    lat_long_list.append([lat, long])
-
-new_geo_df = pd.DataFrame(data=lat_long_list, columns=["Lat", "Long"])
-for band in bands_List:
-    new_geo_df.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/" + band + ".csv", index=False)
-
-'''
+create_new_csv()
 
 start_date = 1546580631000
 Blue_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/Blue.csv")
