@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Function to create generalized graph">
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment=".idea">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preprocessing/combiner.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/combiner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preprocessing/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_preprocessing/interpolation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/interpolation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processing/signal_matching.py" beforeDir="false" afterPath="$PROJECT_DIR$/processing/signal_matching.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -405,7 +404,35 @@
       <option name="project" value="LOCAL" />
       <updated>1584624315720</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="reformatted file">
+      <created>1584627667904</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1584627667904</updated>
+    </task>
+    <task id="LOCAL-00033" summary="added function to create new CSVs">
+      <created>1584627792319</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1584627792319</updated>
+    </task>
+    <task id="LOCAL-00034" summary=".idea">
+      <created>1584627804915</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1584627804915</updated>
+    </task>
+    <task id="LOCAL-00035" summary="removed redundant code">
+      <created>1584628054667</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1584628054667</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -426,8 +453,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Initial Commit" />
-    <MESSAGE value="Updated GUI" />
     <MESSAGE value="added requirments.txt" />
     <MESSAGE value="added script to play with GEE" />
     <MESSAGE value="ground verification support" />
@@ -448,8 +473,11 @@
     <MESSAGE value="indentation changes" />
     <MESSAGE value="modularized main processing function" />
     <MESSAGE value="modularized functions" />
-    <MESSAGE value=".idea" />
     <MESSAGE value="Function to create generalized graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="Function to create generalized graph" />
+    <MESSAGE value="reformatted file" />
+    <MESSAGE value="added function to create new CSVs" />
+    <MESSAGE value=".idea" />
+    <MESSAGE value="removed redundant code" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed redundant code" />
   </component>
 </project>
