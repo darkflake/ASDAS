@@ -9,8 +9,6 @@
       <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/Red.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/SCL.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/SWIR.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ASDAS_GUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ASDAS_GUI.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preprocessing/combiner.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/combiner.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -341,7 +339,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584612711457</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary=".idea">
+      <created>1584616203321</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1584616203321</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -380,6 +385,7 @@
     <MESSAGE value="Modularity in interpolation and graph functions" />
     <MESSAGE value="idea changes" />
     <MESSAGE value="Data for Forests Class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Data for Forests Class" />
+    <MESSAGE value=".idea" />
+    <option name="LAST_COMMIT_MESSAGE" value=".idea" />
   </component>
 </project>
