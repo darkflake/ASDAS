@@ -2,7 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="Data for Forests Class">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/Blue.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/Green.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/NDVI.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/NIR.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/Red.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/SCL.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data_2019/CSV/Forests/SWIR.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ASDAS_GUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ASDAS_GUI.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_preprocessing/combiner.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/combiner.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,7 +60,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.gatherer">
+  <component name="RunManager" selected="Python.combiner">
     <configuration name="combiner" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ASDAS_GUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -166,11 +175,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.combiner" />
         <item itemvalue="Python.gatherer" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.nan" />
         <item itemvalue="Python.interpolation (1)" />
-        <item itemvalue="Python.combiner" />
       </list>
     </recent_temporary>
   </component>
