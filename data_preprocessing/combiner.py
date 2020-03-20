@@ -3,10 +3,17 @@ import pandas as pd
 from datetime import datetime
 
 
-def create_new_csv():
+def create_new_csv(name_of_class: str):
+    r"""
+    Create base CSVs per band and index with just geo-information (Lat-Long)
+
+    :param name_of_class: Class label of data
+    :return: None
+    """
     lat_long_list = []
-    bands_list = ["Blue", "Green", "Red", "NIR", "NDVI", "SWIR", "SCL"]
-    csv_for_pos = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/1546580631000-1547012631000.csv")
+    bands_list = ["Blue", "Green", "Red", "NIR", "SWIR", "SCL", "NDVI", "NDBI", "NDWI"]
+    csv_for_pos = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/1546580631000"
+                                                                    "-1547012631000.csv")
     geo_frame = pd.DataFrame(csv_for_pos['.geo'])
 
     for row in geo_frame.iterrows():
@@ -15,48 +22,66 @@ def create_new_csv():
 
     new_geo_df = pd.DataFrame(data=lat_long_list, columns=["Lat", "Long"])
     for band in bands_list:
-        new_geo_df.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/" + band + ".csv", index=False)
-
-
-create_new_csv()
-
-start_date = 1546580631000
-Blue_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/Blue.csv")
-Green_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/Green.csv")
-Red_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/Red.csv")
-NIR_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/NIR.csv")
-NDVI_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/NDVI.csv")
-SWIR_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/SWIR.csv")
-SCL_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/SCL.csv")
+        new_geo_df.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/" + band + ".csv",
+                          index=False)
 
 
 def get_time(epoch: int):
     return datetime.fromtimestamp(epoch/1000).strftime('%Y-%m-%d')
 
 
-for img in range(1, 74):
-    if img > 1:
-        start_date = 1546580631000 + (img - 1) * 432000000
-    end_date = start_date + 432000000
+def combine(name_of_class: str):
+    r"""
+    Combine image data of all bands into band wise time series data for whole year
 
-    filename = str(start_date) + "-" + str(end_date)
-    image_date = get_time(start_date+86400000)
-    print(f"Done for {image_date}")
+    :param name_of_class: Class label of data
+    :return: None
+    """
+    create_new_csv(name_of_class=name_of_class)
 
-    input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/" + filename + ".csv")
+    start_date = 1546580631000
 
-    Blue_csv[str(image_date)] = input_csv["B2"]
-    Green_csv[str(image_date)] = input_csv["B3"]
-    Red_csv[str(image_date)] = input_csv["B4"]
-    NIR_csv[str(image_date)] = input_csv["B8"]
-    NDVI_csv[str(image_date)] = ((input_csv["B8"] - input_csv["B4"]) / (input_csv["B8"] + input_csv["B4"]))
-    SWIR_csv[str(image_date)] = input_csv["B11"]
-    SCL_csv[str(image_date)] = input_csv["SCL"]
+    Blue_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/Blue.csv")
+    Green_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/Green.csv")
+    Red_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/Red.csv")
+    NIR_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NIR.csv")
+    SWIR_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/SWIR.csv")
+    SCL_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/SCL.csv")
+    NDVI_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDVI.csv")
+    NDBI_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDBI.csv")
+    NDWI_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDWI.csv")
 
-    Blue_csv.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/Blue.csv", index=False)
-    Green_csv.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/Green.csv", index=False)
-    Red_csv.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/Red.csv", index=False)
-    NIR_csv.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/NIR.csv", index=False)
-    NDVI_csv.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/NDVI.csv", index=False)
-    SWIR_csv.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/SWIR.csv", index=False)
-    SCL_csv.to_csv(os.path.abspath(__file__ + "/../../")+"/data_2019/csv/Forests/SCL.csv", index=False)
+    for img in range(1, 74):
+        if img > 1:
+            start_date = 1546580631000 + (img - 1) * 432000000
+        end_date = start_date + 432000000
+
+        filename = str(start_date) + "-" + str(end_date)
+        image_date = get_time(start_date+86400000)
+        print(f"Done for {image_date}")
+
+        input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/" + filename + ".csv")
+
+        Blue_csv[str(image_date)] = input_csv["B2"]
+        Green_csv[str(image_date)] = input_csv["B3"]
+        Red_csv[str(image_date)] = input_csv["B4"]
+        NIR_csv[str(image_date)] = input_csv["B8"]
+        SWIR_csv[str(image_date)] = input_csv["B11"]
+        SCL_csv[str(image_date)] = input_csv["SCL"]
+        NDVI_csv[str(image_date)] = ((input_csv["B8"] - input_csv["B4"]) / (input_csv["B8"] + input_csv["B4"]))
+        NDBI_csv[str(image_date)] = ((input_csv["B11"] - input_csv["B8"]) / (input_csv["B11"] + input_csv["B8"]))
+        NDWI_csv[str(image_date)] = ((input_csv["B8"] - input_csv["B11"]) / (input_csv["B8"] + input_csv["B11"]))
+
+        Blue_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/Blue.csv", index=False)
+        Green_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/Green.csv", index=False)
+        Red_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/Red.csv", index=False)
+        NIR_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NIR.csv", index=False)
+        SWIR_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/SWIR.csv", index=False)
+        SCL_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/SCL.csv", index=False)
+        NDVI_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDVI.csv", index=False)
+        NDBI_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDBI.csv", index=False)
+        NDWI_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDWI.csv", index=False)
+
+
+combine(input("Enter Class :"))
+
