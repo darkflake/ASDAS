@@ -74,7 +74,7 @@ def perform(input_data: pd.DataFrame, band_index: int, interpolation_points: lis
     """
     no_nan_csv = fix_nan(input_data)
 
-    interpolated_csv = apply_interpolation(data_csv=no_nan_csv, index=band_index, interpolation_points=interpolation_points)
+    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=band_index, interpolation_points=interpolation_points)
 
     filtered_csv = apply_savgol(data_csv=interpolated_csv, index=band_index, window=7, order=3)
 
@@ -99,7 +99,7 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
     print(f"Min value : {min(input_data.values.tolist()[pixel_index][2:])} , Max value : {max(input_data.values.tolist()[pixel_index][2:])}")
 
     if do_interpolate:
-        interpolate(raw_data=input_data.values.tolist()[pixel_index][2:], display=True, apply_filter=apply_filter,
+        interpolate(input_data=input_data.values.tolist()[pixel_index][2:], display=True, apply_filter=apply_filter,
                     x_values=input_data.columns.tolist(), band=name_of_band, title=str(pixel_index),
                     interpolation_points=interpolate_points)
     else:
