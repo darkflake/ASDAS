@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment=".idea">
+    <list default="true" id="a77d3bbc-f310-4187-a6ad-f99d5ee3bca4" name="Default" comment="raw DTW implementation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preprocessing/interpolation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing/interpolation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processing/signal_matching.py" beforeDir="false" afterPath="$PROJECT_DIR$/processing/signal_matching.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,7 +30,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="file.status.colors" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -177,7 +175,7 @@
     </recent_temporary>
   </component>
   <component name="SvnConfiguration">
-    <configuration />
+    <configuration>C:\Users\Smita Kulkarni\AppData\Roaming\Subversion</configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -432,7 +430,35 @@
       <option name="project" value="LOCAL" />
       <updated>1584628054667</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="added Doc strings for reference">
+      <created>1584633876332</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1584633876332</updated>
+    </task>
+    <task id="LOCAL-00037" summary=".idea">
+      <created>1584633884052</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1584633884052</updated>
+    </task>
+    <task id="LOCAL-00038" summary="raw DTW implementation">
+      <created>1584633901735</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1584633901735</updated>
+    </task>
+    <task id="LOCAL-00039" summary="consistency in functions">
+      <created>1584686025230</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1584686025230</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -453,9 +479,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="added requirments.txt" />
-    <MESSAGE value="added script to play with GEE" />
-    <MESSAGE value="ground verification support" />
     <MESSAGE value="Support for Interpolation + Savitsy-Golay Filter" />
     <MESSAGE value="Raw + Aggregated Data for 2019" />
     <MESSAGE value="Combining multiple CSVs into aggregated Band-wise CSV" />
@@ -476,8 +499,11 @@
     <MESSAGE value="Function to create generalized graph" />
     <MESSAGE value="reformatted file" />
     <MESSAGE value="added function to create new CSVs" />
-    <MESSAGE value=".idea" />
     <MESSAGE value="removed redundant code" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed redundant code" />
+    <MESSAGE value="added Doc strings for reference" />
+    <MESSAGE value=".idea" />
+    <MESSAGE value="raw DTW implementation" />
+    <MESSAGE value="consistency in functions" />
+    <option name="LAST_COMMIT_MESSAGE" value="consistency in functions" />
   </component>
 </project>
