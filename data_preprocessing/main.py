@@ -31,9 +31,9 @@ def get_months(input_data: pd.DataFrame):
 
 def get_data():
     name_of_class = input("Select Class [Forests/Water] : ")
-    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI] : ")
+    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
     pixel_index = int(input("Pixel Index : "))
-    # name_of_class = 'Forests'
+    # name_of_class = 'NDVI'
     # name_of_band = 'NDVI'
     # pixel_index = 0
 
@@ -68,7 +68,7 @@ def perform(input_data: pd.DataFrame, pixel_index: int, interpolation_points: li
     Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
 
     :param input_data: raw data
-    :param pixel_index: which data point (pixel) to render : 0-699
+    :param pixel_index: which data point (pixel) to render : 0-722
     :param interpolation_points: list of points to perform interpolation between
     :return: dictionary with interpolated and filtered DataFrames
     """
@@ -90,7 +90,7 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
 
     :param input_data: input data
     :param pixel_index: which data point (pixel) to render : 0-699
-    :param name_of_band: Red / Green / Blue / NIR / NDVI
+    :param name_of_band: Red / Green / Blue / NIR / NDVI / NDWI / NDBI
     :param interpolate_points: list of points to perform interpolation between
     :param apply_filter: Apply and render Savitsky-Golay filter
     :param do_interpolate: Perform interpolation on data
