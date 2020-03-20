@@ -117,6 +117,43 @@ def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str):
     """
     input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{file_name}.csv", index=False)
 
+
+def get_cloud_dates():
+    cloud_dates = []
+    before = -1
+    after = -1
+    count = 0
+    name_of_class, name_of_band, pixel_index, input_csv = get_data()
+    row_values = input_csv.iloc[pixel_index]
+    last_element = pd.Series([-1])
+    row_values.append(last_element)
+    column_values = input_csv.columns.tolist()
+
+    for current in range(len(row_values)):
+        value = row_values[current]
+        if row_values[current] == 8 or row_values[current] == 9:
+            if count == 0:
+                before = current - 1
+                if before in cloud_dates:
+                    print(" ")
+                else:
+                    cloud_dates.append(column_values[before])
+            count = count + 1
+        else:
+            if 1 <= count <= 3:
+                after = current
+                cloud_dates.append(column_values[after])
+            else:
+                if cloud_dates:
+                    if count != 0:
+                        cloud_dates.pop()
+
+        if row_values[current] != 8 and row_values[current] != 9:
+            count = 0
+
+    print(cloud_dates)
+    return cloud_dates
+
 # _____________________________________________________________________________________________________________________
 # Play:
 # interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',
