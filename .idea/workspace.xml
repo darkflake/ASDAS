@@ -189,9 +189,9 @@
     </configuration>
     <list>
       <item itemvalue="Python.combiner" />
+      <item itemvalue="Python.gatherer" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.nan" />
-      <item itemvalue="Python.gatherer" />
       <item itemvalue="Python.signal_matching" />
     </list>
     <recent_temporary>
