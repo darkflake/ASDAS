@@ -63,20 +63,20 @@ def fix_nan(input_data: pd.DataFrame):
 # _____________________________________
 
 
-def perform(input_data: pd.DataFrame, band_index: int, interpolation_points: list):
+def perform(input_data: pd.DataFrame, pixel_index: int, interpolation_points: list):
     r"""
     Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
 
     :param input_data: raw data
-    :param band_index: which data point (pixel) to render : 0-699
+    :param pixel_index: which data point (pixel) to render : 0-699
     :param interpolation_points: list of points to perform interpolation between
     :return: dictionary with interpolated and filtered DataFrames
     """
     no_nan_csv = fix_nan(input_data)
 
-    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=band_index, interpolation_points=interpolation_points)
+    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=pixel_index, interpolation_points=interpolation_points)
 
-    filtered_csv = apply_savgol(data_csv=interpolated_csv, index=band_index, window=7, order=3)
+    filtered_csv = apply_savgol(data_csv=interpolated_csv, index=pixel_index, window=7, order=3)
 
     processed = {'Interpolated': interpolated_csv, 'Filtered': filtered_csv}
     return processed
