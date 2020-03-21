@@ -178,8 +178,6 @@ def tester(test: pd.DataFrame, training_data_label: str = None):
     bands = ['NDVI', 'NDWI', 'NDBI']
     classes = ['Forests', 'Water', 'Agriculture', 'Barren', 'Settlements']
 
-    data_frame = pd.DataFrame()
-
     if training_data_label:
         data_frame = combiner.create_new_csv(name_of_class=training_data_label, get_geo_df=True)
         for index, rows in test.iterrows():
