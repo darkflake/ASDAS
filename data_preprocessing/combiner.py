@@ -3,11 +3,12 @@ import pandas as pd
 from datetime import datetime
 
 
-def create_new_csv(name_of_class: str):
+def create_new_csv(name_of_class: str, get_lat_long_df=False):
     r"""
     Create base CSVs per band and index with just geo-information (Lat-Long)
 
     :param name_of_class: Class label of data
+    :param get_lat_long_df: Just return the DataFrame with Lat-long
     :return: None
     """
     lat_long_list = []
@@ -21,6 +22,10 @@ def create_new_csv(name_of_class: str):
         lat_long_list.append([lat, long])
 
     new_geo_df = pd.DataFrame(data=lat_long_list, columns=["Lat", "Long"])
+
+    if get_lat_long_df:
+        return new_geo_df
+
     for band in bands_list:
         new_geo_df.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/" + band + ".csv",
                           index=False)
