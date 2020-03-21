@@ -8,6 +8,7 @@ from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 
 from data_preprocessing import main
+from data_preprocessing import combiner
 
 
 def get_average_curve(input_csv: pd.DataFrame) -> pd.DataFrame:
@@ -21,8 +22,6 @@ def get_average_curve(input_csv: pd.DataFrame) -> pd.DataFrame:
     average_series = input_csv.mean(axis=0)
     generalised = pd.DataFrame(average_series).transpose()
     return generalised
-
-
 # _____________________________________
 
 
@@ -30,12 +29,13 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
     r"""
     Perform FastDTW algorithm on template graph and test graph.
 
-    :param template: Dataframe with ONLY one curve to be used as reference
-    :param test: Dataframe with all testing curve data
+    :param template: DataFrame with ONLY one curve to be used as reference
+    :param test: DataFrame with all testing curve data
     :param display: Render graph
     :param single_pixel: To perform and display DTW on single pixel. Else perform on entire test DataFrame
     :param pixel_index: which data point (pixel) to select : 0-722
-    :return: Plot, Distance and optimal Path for single pixel | List with distances between reference curve and all test curves.
+    :return: Plot, Distance and optimal Path for single pixel | List with distances between reference curve and all test
+             curves.
     """
     template = template.values.tolist()[0][2:]
 
@@ -89,8 +89,6 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
             plt.show()
 
         return distance_list
-
-
 # _____________________________________
 
 
@@ -112,8 +110,6 @@ def calculate_threshold(distance_list: list, test_distance: float):
         f"\t|\tPERCENTILE : {percentile}")
 
     return percentile
-
-
 # _____________________________________
 
 
@@ -132,8 +128,6 @@ def pickler(generalized_curve: pd.DataFrame, distances_list: list, name_of_class
     outfile = open(filename, 'wb')
     pickle.dump(dtw_data, outfile)
     outfile.close()
-
-
 # _____________________________________
 
 
@@ -161,7 +155,6 @@ def trainer(input_data: pd.DataFrame, name_of_class: str, name_of_band: str):
 
 
     :param input_data: raw input data
-    :param pixel_index: which data point (pixel) to select : 0-722
     :param name_of_class: Class label of requested data
     :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
     :return: None
@@ -188,6 +181,7 @@ def tester(test: pd.DataFrame, training_data_label: str = None):
     data_frame = pd.DataFrame()
 
     if training_data_label:
+        data_frame = combiner.create_new_csv(name_of_class=training_data_label, get_geo_df=True)
         for index, rows in test.iterrows():
             for band in bands:
                 for label in classes:
