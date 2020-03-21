@@ -39,7 +39,7 @@ def get_data():
 
     input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
-    return name_of_class, name_of_band, pixel_index, input_csv
+    return name_of_class, name_of_band, pixel_index, fix_nan(input_csv)
 # _____________________________________
 
 
@@ -74,7 +74,8 @@ def perform(input_data: pd.DataFrame, pixel_index: int, interpolation_points: li
     """
     no_nan_csv = fix_nan(input_data)
 
-    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=pixel_index, interpolation_points=interpolation_points)
+    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=pixel_index,
+                                           interpolation_points=interpolation_points)
 
     filtered_csv = apply_savgol(data_csv=interpolated_csv, index=pixel_index, window=7, order=3)
 
@@ -103,7 +104,8 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
                     x_values=input_data.columns.tolist(), band=name_of_band, title=str(pixel_index),
                     interpolation_points=interpolate_points)
     else:
-        graph(data_y=input_data.values.tolist()[pixel_index][2:], band=name_of_band, title=str(pixel_index), savgol=apply_filter)
+        graph(data_y=input_data.values.tolist()[pixel_index][2:], band=name_of_band, title=str(pixel_index),
+              savgol=apply_filter)
 # _____________________________________
 
 
@@ -115,7 +117,8 @@ def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str):
     :param file_name: Name of file to be saved
     :return: None
     """
-    input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{file_name}.csv", index=False)
+    input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{file_name}.csv",
+                      index=False)
 
 
 def get_cloud_dates():

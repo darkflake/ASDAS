@@ -1,6 +1,5 @@
 import pickle
 import os
-import time
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,6 +21,8 @@ def get_average_curve(input_csv: pd.DataFrame) -> pd.DataFrame:
     average_series = input_csv.mean(axis=0)
     generalised = pd.DataFrame(average_series).transpose()
     return generalised
+
+
 # _____________________________________
 
 
@@ -43,7 +44,8 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
         distance, path = fastdtw(np.asarray(template), np.asarray(test), dist=euclidean)
 
         if display:
-            labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep', '02 Oct',
+            labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
+                      '02 Oct',
                       '01 Nov', '01 Dec']
             indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
 
@@ -87,6 +89,8 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
             plt.show()
 
         return distance_list
+
+
 # _____________________________________
 
 
@@ -102,11 +106,14 @@ def calculate_threshold(distance_list: list, test_distance: float):
     temp_data_list.sort()
 
     rank = sum(i < test_distance for i in temp_data_list)
-    percentile = (rank*100)/len(distance_list)
-    print(f"The test curve ranks at {rank} out of {len(distance_list)}, with distance from General curve = {test_distance}. "
-          f"\t|\tPERCENTILE : {percentile}")
+    percentile = (rank * 100) / len(distance_list)
+    print(
+        f"The test curve ranks at {rank} out of {len(distance_list)}, with distance from General curve = {test_distance}. "
+        f"\t|\tPERCENTILE : {percentile}")
 
     return percentile
+
+
 # _____________________________________
 
 
@@ -117,7 +124,7 @@ def pickler(generalized_curve: pd.DataFrame, distances_list: list, name_of_class
     :param generalized_curve: Dataframe with ONLY one curve (Template curve)
     :param distances_list: List  of DTW distances
     :param name_of_class: Class label
-    :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI
+    :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
     :return: None
     """
     dtw_data = {'general curve': generalized_curve, 'distances list': distances_list}
@@ -125,6 +132,8 @@ def pickler(generalized_curve: pd.DataFrame, distances_list: list, name_of_class
     outfile = open(filename, 'wb')
     pickle.dump(dtw_data, outfile)
     outfile.close()
+
+
 # _____________________________________
 
 
@@ -133,7 +142,7 @@ def unpickler(name_of_class: str, name_of_band: str):
     Function to read DTW data from pickled file.
 
     :param name_of_class: Class label of requested data
-    :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI
+    :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
     :return: Dictionary with generalized curve and distances list of training samples
     """
     file_name = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/DTW_{name_of_class}.dat"
@@ -143,10 +152,12 @@ def unpickler(name_of_class: str, name_of_band: str):
     infile.close()
 
     return new_dict
+
+
 # _____________________________________
 
 
-def trainer(input_data: pd.DataFrame, pixel_index: int, name_of_class: str, name_of_band: str):
+def trainer(input_data: pd.DataFrame, name_of_class: str, name_of_band: str):
     r"""
     Use training data to create a GENERALIZED curve and compute DTW-distances of every curve from it.
 
@@ -154,23 +165,52 @@ def trainer(input_data: pd.DataFrame, pixel_index: int, name_of_class: str, name
     :param input_data: raw input data
     :param pixel_index: which data point (pixel) to select : 0-722
     :param name_of_class: Class label of requested data
-    :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI
+    :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
     :return: None
     """
     generalized_curve = get_average_curve(input_data)
-    distances = apply_dtw(template=generalized_curve, test=input_data, single_pixel=False, pixel_index=pixel_index,
+    distances = apply_dtw(template=generalized_curve, test=input_data, single_pixel=False,
                           display=True)
     pickler(generalized_curve=generalized_curve, distances_list=distances, name_of_class=name_of_class,
             name_of_band=name_of_band)
 
 
+def tester(test: pd.DataFrame, training_data_label: str = None):
+    r"""
+    Check the percentile of testing curve with generalised curve for every index and every class.
+
+    :param test: Test Dataframe with ONLY ONE curve for testing
+    :param training_data_label: Class of data, in case testing is done on training data with known labels.
+    :return:
+    """
+    bands = ['NDVI', 'NDWI', 'NDBI']
+    classes = ['Forests', 'Water', 'Agriculture', 'Barren', 'Settlements']
+
+    data_series = pd.Series()
+
+    for band in bands:
+        for label in classes:
+            pickled_dict = unpickler(name_of_class=label, name_of_band=band)
+            test_distance, test_path = apply_dtw(template=pickled_dictionary['general curve'], test=test, display=False)
+            band['label'] = calculate_threshold(pickled_dict['distances list'], test_distance=test_distance)
+
+        data_series.append(pd.Series(band))
+
+        if training_data_label:
+            data_series.append(pd.Series({'label': training_data_label}))
+
+    return data_series
+
+
 # Play:
 class_name, band_name, band_index, band_csv = main.get_data()
-trainer(band_csv, band_index, class_name, band_name)
-pickled_dict = unpickler(name_of_class=class_name, name_of_band=band_name)
 
-test_distance, test_path = apply_dtw(pickled_dict['general curve'], test=band_csv, display=True, single_pixel=True,
-                                     pixel_index=band_index)
-percentile_value = calculate_threshold(pickled_dict['distances list'], test_distance=test_distance)
+# TRAINING THE DTW
+# trainer(band_csv, class_name, band_name)
 
+pickled_dictionary = unpickler(name_of_class=class_name, name_of_band=band_name)
 
+testing_distance, testing_path = apply_dtw(pickled_dictionary['general curve'], test=band_csv, display=True,
+                                           single_pixel=True, pixel_index=band_index)
+
+percentile_value = calculate_threshold(pickled_dictionary['distances list'], test_distance=testing_distance)
