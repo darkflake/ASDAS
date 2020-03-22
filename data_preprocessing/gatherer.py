@@ -2,6 +2,7 @@
 
 from pynput.mouse import Button, Controller
 import time
+
 # Time for changing the window to browser
 time.sleep(2)
 
