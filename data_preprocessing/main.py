@@ -31,15 +31,15 @@ def get_months(input_data: pd.DataFrame):
 
 def get_data():
     name_of_class = input("Select Class [Forests/Water] : ")
-    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI] : ")
+    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
     pixel_index = int(input("Pixel Index : "))
-    # name_of_class = 'Forests'
+    # name_of_class = 'NDVI'
     # name_of_band = 'NDVI'
     # pixel_index = 0
 
     input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
-    return name_of_class, name_of_band, pixel_index, input_csv
+    return name_of_class, name_of_band, pixel_index, fix_nan(input_csv)
 # _____________________________________
 
 
@@ -68,13 +68,14 @@ def perform(input_data: pd.DataFrame, pixel_index: int, interpolation_points: li
     Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
 
     :param input_data: raw data
-    :param pixel_index: which data point (pixel) to render : 0-699
+    :param pixel_index: which data point (pixel) to render : 0-722
     :param interpolation_points: list of points to perform interpolation between
     :return: dictionary with interpolated and filtered DataFrames
     """
     no_nan_csv = fix_nan(input_data)
 
-    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=pixel_index, interpolation_points=interpolation_points)
+    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=pixel_index,
+                                           interpolation_points=interpolation_points)
 
     filtered_csv = apply_savgol(data_csv=interpolated_csv, index=pixel_index, window=7, order=3)
 
@@ -90,7 +91,7 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
 
     :param input_data: input data
     :param pixel_index: which data point (pixel) to render : 0-699
-    :param name_of_band: Red / Green / Blue / NIR / NDVI
+    :param name_of_band: Red / Green / Blue / NIR / NDVI / NDWI / NDBI
     :param interpolate_points: list of points to perform interpolation between
     :param apply_filter: Apply and render Savitsky-Golay filter
     :param do_interpolate: Perform interpolation on data
@@ -103,7 +104,8 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
                     x_values=input_data.columns.tolist(), band=name_of_band, title=str(pixel_index),
                     interpolation_points=interpolate_points)
     else:
-        graph(data_y=input_data.values.tolist()[pixel_index][2:], band=name_of_band, title=str(pixel_index), savgol=apply_filter)
+        graph(data_y=input_data.values.tolist()[pixel_index][2:], band=name_of_band, title=str(pixel_index),
+              savgol=apply_filter)
 # _____________________________________
 
 
@@ -115,23 +117,20 @@ def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str):
     :param file_name: Name of file to be saved
     :return: None
     """
-    input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{file_name}.csv", index=False)
+    input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{file_name}.csv",
+                      index=False)
 
 
-def get_cloud_dates():
+def get_cloud_dates(pixel_index: int, input_data: pd.DataFrame):
     cloud_dates = []
-    before = -1
-    after = -1
     count = 0
-    name_of_class, name_of_band, pixel_index, input_csv = get_data()
-    row_values = input_csv.iloc[pixel_index]
+    row_values = input_data.iloc[pixel_index]
     last_element = pd.Series([-1])
     row_values.append(last_element)
-    column_values = input_csv.columns.tolist()
+    column_values = input_data.columns.tolist()
 
     for current in range(len(row_values)):
-        value = row_values[current]
-        if row_values[current] == 8 or row_values[current] == 9:
+        if row_values[current] == 8 or row_values[current] == 9 or row_values[current] == 10:
             if count == 0:
                 before = current - 1
                 if before in cloud_dates:
@@ -148,11 +147,12 @@ def get_cloud_dates():
                     if count != 0:
                         cloud_dates.pop()
 
-        if row_values[current] != 8 and row_values[current] != 9:
+        if row_values[current] != 8 and row_values[current] != 9 and row_values[current] != 10:
             count = 0
 
     print(cloud_dates)
     return cloud_dates
+
 
 # _____________________________________________________________________________________________________________________
 # Play:
@@ -160,10 +160,10 @@ def get_cloud_dates():
 #                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
 #
 # class_name, band_name, index, csv = get_data()
-#
+# get_cloud_dates(pixel_index=index, input_data=csv)
 # interpolated_data, filtered_data = perform(csv)
 #
-# display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=False, apply_filter=False,
-#         interpolate_points=interpolation_points)
+# display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=True, apply_filter=False,
+#         interpolate_points=get_cloud_dates(pixel_index=index, input_data=csv))
 
 # CHANGES TO VERIFY
