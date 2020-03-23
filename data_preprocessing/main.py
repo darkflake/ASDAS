@@ -26,6 +26,8 @@ def get_months(input_data: pd.DataFrame):
             init_month = month
 
     return labels, indexes
+
+
 # _____________________________________
 
 
@@ -37,9 +39,12 @@ def get_data():
     # name_of_band = 'NDVI'
     # pixel_index = 0
 
-    input_csv = pd.read_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
+    input_csv = pd.read_csv(
+        os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
     return name_of_class, name_of_band, pixel_index, fix_nan(input_csv)
+
+
 # _____________________________________
 
 
@@ -60,6 +65,8 @@ def fix_nan(input_data: pd.DataFrame):
         return processed
     else:
         return input_data
+
+
 # _____________________________________
 
 
@@ -81,6 +88,8 @@ def perform(input_data: pd.DataFrame, pixel_index: int, interpolation_points: li
 
     processed = {'Interpolated': interpolated_csv, 'Filtered': filtered_csv}
     return processed
+
+
 # _____________________________________
 
 
@@ -97,7 +106,8 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
     :param do_interpolate: Perform interpolation on data
     :return: None
     """
-    print(f"Min value : {min(input_data.values.tolist()[pixel_index][2:])} , Max value : {max(input_data.values.tolist()[pixel_index][2:])}")
+    print(
+        f"Min value : {min(input_data.values.tolist()[pixel_index][2:])} , Max value : {max(input_data.values.tolist()[pixel_index][2:])}")
 
     if do_interpolate:
         interpolate(input_data=input_data.values.tolist()[pixel_index][2:], display=True, apply_filter=apply_filter,
@@ -106,6 +116,8 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
     else:
         graph(data_y=input_data.values.tolist()[pixel_index][2:], band=name_of_band, title=str(pixel_index),
               savgol=apply_filter)
+
+
 # _____________________________________
 
 
@@ -119,6 +131,8 @@ def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str):
     """
     input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{file_name}.csv",
                       index=False)
+
+# _____________________________________
 
 
 def get_cloud_dates(pixel_index: int, input_data: pd.DataFrame):
@@ -152,7 +166,6 @@ def get_cloud_dates(pixel_index: int, input_data: pd.DataFrame):
 
     print(cloud_dates)
     return cloud_dates
-
 
 # _____________________________________________________________________________________________________________________
 # Play:
