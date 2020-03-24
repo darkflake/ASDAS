@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import time
 
 from data_preprocessing.interpolation import interpolate, graph, apply_interpolation
 from data_preprocessing.savitsky_golay import apply_savgol
@@ -163,9 +164,11 @@ def preprocess():
     """
 
     # class_name, band_name, pixel_index, input_data = get_data()
+    start_time = time.time()
+    counter = 0
 
     bands = ['NDVI', 'NDWI', 'NDBI']
-    classes = ['Forests', 'Water', 'Agriculture', 'Barren', 'Settlements']
+    classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
     for label in classes:
         for band in bands:
             input_data = pd.read_csv(
@@ -185,8 +188,10 @@ def preprocess():
                 filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
 
                 working_csv = filtered_csv
-                print(f"Done For : {index}")
-                write_csv(filtered_csv, label, file_name=f"preprocessed_{band}")
+                counter += 1
+                print(f"_________________Done For : {index} ________ Total Data Points Count : {counter}")
+            write_csv(filtered_csv, label, file_name=f"preprocessed_{band}")
+            print(f"== Total time spend until now : == {round(time.time() - start_time)}s == ")
 
     # preprocessed = {'Original': input_data}
     #
