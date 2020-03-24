@@ -32,7 +32,7 @@ def get_months(input_data: pd.DataFrame):
 
 
 def get_data():
-    name_of_class = input("Select Class [Forests/Water] : ")
+    name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
     name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
     pixel_index = int(input("Pixel Index : "))
     # name_of_class = 'NDVI'
@@ -65,29 +65,6 @@ def fix_nan(input_data: pd.DataFrame):
         return processed
     else:
         return input_data
-
-
-# _____________________________________
-
-
-def perform(input_data: pd.DataFrame, pixel_index: int, interpolation_points: list):
-    r"""
-    Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
-
-    :param input_data: raw data
-    :param pixel_index: which data point (pixel) to render : 0-722
-    :param interpolation_points: list of points to perform interpolation between
-    :return: dictionary with interpolated and filtered DataFrames
-    """
-    no_nan_csv = fix_nan(input_data)
-
-    interpolated_csv = apply_interpolation(input_data=no_nan_csv, index=pixel_index,
-                                           interpolation_points=interpolation_points)
-
-    filtered_csv = apply_savgol(data_csv=interpolated_csv, index=pixel_index, window=7, order=3)
-
-    processed = {'Interpolated': interpolated_csv, 'Filtered': filtered_csv}
-    return processed
 
 
 # _____________________________________
@@ -129,13 +106,16 @@ def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str):
     :param file_name: Name of file to be saved
     :return: None
     """
-    input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{file_name}.csv",
+    input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/CSV/{name_of_class}/{file_name}.csv",
                       index=False)
+    print("Data Written")
 
 # _____________________________________
 
 
-def get_cloud_dates(pixel_index: int, input_data: pd.DataFrame):
+def get_cloud_dates(pixel_index: int, name_of_class: str):
+    input_data = pd.read_csv(
+        os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/SCL.csv")
     cloud_dates = []
     count = 0
     row_values = input_data.iloc[pixel_index]
@@ -148,7 +128,7 @@ def get_cloud_dates(pixel_index: int, input_data: pd.DataFrame):
             if count == 0:
                 before = current - 1
                 if before in cloud_dates:
-                    print(" ")
+                    continue
                 else:
                     cloud_dates.append(column_values[before])
             count = count + 1
@@ -164,8 +144,52 @@ def get_cloud_dates(pixel_index: int, input_data: pd.DataFrame):
         if row_values[current] != 8 and row_values[current] != 9 and row_values[current] != 10:
             count = 0
 
-    print(cloud_dates)
     return cloud_dates
+
+# _____________________________________
+
+
+def preprocess():
+    r"""
+    Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
+    The function calls  get_data() -> checks for stored preprocessed data.
+    If not found, performs following functions:
+    -> Finding and Handling NaN values.
+    -> Getting cloud dates - Atmospheric Correction.
+    -> Linearly Interpolating between cloud dates.
+    -> Applying Savitsky-Golay filter.
+
+    :return: dictionary with interpolated and filtered DataFrames
+    """
+
+    class_name, band_name, pixel_index, input_data = get_data()
+    preprocessed = {'Original': input_data}
+
+    try:
+        preprocessed_csv = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
+
+    except FileNotFoundError as e:
+        no_nan_csv = fix_nan(input_data)
+        working_csv = no_nan_csv.copy()
+
+        for index in range(0, len(no_nan_csv.index)):
+            interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
+
+            interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
+                                                   interpolation_points=interpolation_points)
+
+            filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
+
+            working_csv = filtered_csv
+            print(f"Done For : {index}")
+
+        preprocessed['preprocessed'] = filtered_csv
+        write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
+        return class_name, pixel_index, band_name, preprocessed
+
+    preprocessed['preprocessed'] = preprocessed_csv
+    return class_name, pixel_index, band_name, preprocessed
 
 # _____________________________________________________________________________________________________________________
 # Play:
@@ -173,7 +197,7 @@ def get_cloud_dates(pixel_index: int, input_data: pd.DataFrame):
 #                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
 #
 # class_name, band_name, index, csv = get_data()
-# get_cloud_dates(pixel_index=index, input_data=csv)
+# get_cloud_dates(pixel_index=index, naem_of_class = class_name)
 # interpolated_data, filtered_data = perform(csv)
 #
 # display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=True, apply_filter=False,
