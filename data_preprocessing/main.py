@@ -162,35 +162,61 @@ def preprocess():
     :return: dictionary with interpolated and filtered DataFrames
     """
 
-    class_name, band_name, pixel_index, input_data = get_data()
-    preprocessed = {'Original': input_data}
+    # class_name, band_name, pixel_index, input_data = get_data()
 
-    try:
-        preprocessed_csv = pd.read_csv(
-            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
+    bands = ['NDVI', 'NDWI', 'NDBI']
+    classes = ['Forests', 'Water', 'Agriculture', 'Barren', 'Settlements']
+    for label in classes:
+        for band in bands:
+            input_data = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{label}/{band}.csv")
+            no_nan_csv = fix_nan(input_data)
+            working_csv = no_nan_csv.copy()
+            print("__________________________________________________")
+            print(f"Working : {label} - {band}")
+            print("__________________________________________________")
 
-    except FileNotFoundError as e:
-        no_nan_csv = fix_nan(input_data)
-        working_csv = no_nan_csv.copy()
+            for index in range(0, len(no_nan_csv.index)):
+                interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=label)
 
-        for index in range(0, len(no_nan_csv.index)):
-            interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
+                interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
+                                                       interpolation_points=interpolation_points)
 
-            interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
-                                                   interpolation_points=interpolation_points)
+                filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
 
-            filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
+                working_csv = filtered_csv
+                print(f"Done For : {index}")
+                write_csv(filtered_csv, label, file_name=f"preprocessed_{band}")
 
-            working_csv = filtered_csv
-            print(f"Done For : {index}")
+    # preprocessed = {'Original': input_data}
+    #
+    # try:
+    #     preprocessed_csv = pd.read_csv(
+    #         os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
+    #
+    # except FileNotFoundError as e:
+    #     no_nan_csv = fix_nan(input_data)
+    #     working_csv = no_nan_csv.copy()
+    #
+    #     for index in range(0, len(no_nan_csv.index)):
+    #         interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
+    #
+    #         interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
+    #                                                interpolation_points=interpolation_points)
+    #
+    #         filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
+    #
+    #         working_csv = filtered_csv
+    #         print(f"Done For : {index}")
+    #
+    #     preprocessed['preprocessed'] = filtered_csv
+    #     write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
+    #     return class_name, pixel_index, band_name, preprocessed
+    #
+    # preprocessed['preprocessed'] = preprocessed_csv
+    # return class_name, pixel_index, band_name, preprocessed
 
-        preprocessed['preprocessed'] = filtered_csv
-        write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
-        return class_name, pixel_index, band_name, preprocessed
-
-    preprocessed['preprocessed'] = preprocessed_csv
-    return class_name, pixel_index, band_name, preprocessed
-
+preprocess()
 # _____________________________________________________________________________________________________________________
 # Play:
 # interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',

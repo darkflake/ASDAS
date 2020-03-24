@@ -229,11 +229,11 @@ class_name, band_name, band_index, input_data = main.preprocess()
 
 pickled_dictionary = unpickler(name_of_class=class_name, name_of_band=band_name)
 
-# testing_distance, testing_path = apply_dtw(pickled_dictionary['general curve'], test=band_csv, display=True,
-#                                            single_pixel=True, pixel_index=band_index)
-
-# percentile_value = calculate_threshold(pickled_dictionary['distances list'], test_distance=testing_distance)
+testing_distance, testing_path = apply_dtw(pickled_dictionary['general curve'], test=input_data['preprocessed'], display=True,
+                                           single_pixel=True, pixel_index=band_index)
+#
+percentile_value = calculate_threshold(pickled_dictionary['distances list'], test_distance=testing_distance)
 
 # TRAINING THE DTW
-# trainer(band_csv, class_name, band_name)
-# tester(band_csv, band_name)
+trainer(input_data['preprocessed'], class_name, band_name)
+tester(input_data['preprocessed'], band_name)
