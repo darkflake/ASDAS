@@ -163,10 +163,58 @@ def preprocess():
     :return: dictionary with interpolated and filtered DataFrames
     """
 
-    # class_name, band_name, pixel_index, input_data = get_data()
+    class_name, band_name, pixel_index, input_data = get_data()
+
+    preprocessed = {'Original': input_data}
+
+    try:
+        preprocessed_csv = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
+
+    except FileNotFoundError as e:
+        no_nan_csv = fix_nan(input_data)
+        working_csv = no_nan_csv.copy()
+
+        for index in range(0, len(no_nan_csv.index)):
+            interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
+
+            interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
+                                                   interpolation_points=interpolation_points)
+
+            filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
+
+            working_csv = filtered_csv
+            print(f"Done For : {index}")
+
+        preprocessed['preprocessed'] = filtered_csv
+        write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
+        return class_name, pixel_index, band_name, preprocessed
+
+    preprocessed['preprocessed'] = preprocessed_csv
+    return class_name, pixel_index, band_name, preprocessed
+
+
+# _____________________________________________________________________________________________________________________
+# Play:
+
+# preprocess()
+# interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',
+#                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
+#
+# class_name, band_name, index, csv = get_data()
+# get_cloud_dates(pixel_index=index, naem_of_class = class_name)
+# interpolated_data, filtered_data = perform(csv)
+#
+# display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=True, apply_filter=False,
+#         interpolate_points=get_cloud_dates(pixel_index=index, input_data=csv))
+
+'''
+FOR WHOLE RAW DATA : 
+
+def preprocess():
     start_time = time.time()
     counter = 0
-
+    
     bands = ['NDVI', 'NDWI', 'NDBI']
     classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
     for label in classes:
@@ -178,60 +226,19 @@ def preprocess():
             print("__________________________________________________")
             print(f"Working : {label} - {band}")
             print("__________________________________________________")
-
+    
             for index in range(0, len(no_nan_csv.index)):
                 interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=label)
-
+    
                 interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
                                                        interpolation_points=interpolation_points)
-
+    
                 filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
-
+    
                 working_csv = filtered_csv
                 counter += 1
                 print(f"_________________Done For : {index} ________ Total Data Points Count : {counter}")
             write_csv(filtered_csv, label, file_name=f"preprocessed_{band}")
             print(f"== Total time spend until now : == {round(time.time() - start_time)}s == ")
 
-    # preprocessed = {'Original': input_data}
-    #
-    # try:
-    #     preprocessed_csv = pd.read_csv(
-    #         os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
-    #
-    # except FileNotFoundError as e:
-    #     no_nan_csv = fix_nan(input_data)
-    #     working_csv = no_nan_csv.copy()
-    #
-    #     for index in range(0, len(no_nan_csv.index)):
-    #         interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
-    #
-    #         interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
-    #                                                interpolation_points=interpolation_points)
-    #
-    #         filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
-    #
-    #         working_csv = filtered_csv
-    #         print(f"Done For : {index}")
-    #
-    #     preprocessed['preprocessed'] = filtered_csv
-    #     write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
-    #     return class_name, pixel_index, band_name, preprocessed
-    #
-    # preprocessed['preprocessed'] = preprocessed_csv
-    # return class_name, pixel_index, band_name, preprocessed
-
-preprocess()
-# _____________________________________________________________________________________________________________________
-# Play:
-# interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',
-#                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
-#
-# class_name, band_name, index, csv = get_data()
-# get_cloud_dates(pixel_index=index, naem_of_class = class_name)
-# interpolated_data, filtered_data = perform(csv)
-#
-# display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=True, apply_filter=False,
-#         interpolate_points=get_cloud_dates(pixel_index=index, input_data=csv))
-
-# CHANGES TO VERIFY
+'''
