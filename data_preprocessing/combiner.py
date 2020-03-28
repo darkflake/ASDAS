@@ -88,5 +88,6 @@ def combine(name_of_class: str):
         NDWI_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDWI.csv", index=False)
 
 
-combine(input("Enter Class :"))
+# PLAY:
+# combine(input("Enter Class :"))
 
