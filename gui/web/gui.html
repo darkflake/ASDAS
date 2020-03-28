@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>gui</title>
+    <script src="/eel.js"> </script>
+    <script>
+       async function showjs(){
+        let value= await eel.show()();
+        alert(value);
+      
+       }
+    </script>
+<style>
+.dropbtn {
+  background-color:#b2c8eb;
+  color: black;
+  padding: 16px;
+  font-size: 16px;
+  border: black;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+ .dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+
+  z-index: 1;
+}
+
+
+.dropdown-content a {
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+  display: block;
+}
+ .button{
+    background-color: white;
+   color:black;
+   padding: 16px;
+ }
+ .button:hover {background-color: #b2c8eb; }
+
+.dropdown-content a: hover {background-color: #b2c8eb;}
+
+.dropdown:hover .dropdown-content{display: block;}
+
+.dropdown:hover .dropbtn {background-color: #b2c8eb;}
+</style>
+</head>
+<body>
+
+<h1 style="text-align:center;" >ASDAS</h1>
+<p>Select the date for which u want classified output.</p>
+
+<div class="dropdown">
+  <button class="dropbtn">Select date</button>
+  <div class="dropdown-content">
+       <button  class="button" onclick="showjs()"> date1</button><br>
+       <button  class="button" onclick="showjs()"> date2</button><br>
+       <button  class="button" onclick="showjs()"> date3</button><br>
+    <!--<a href="showjs()">date 1</a>
+    <a href="#">date 2</a>
+    <a href="#">date 3</a> -->
+  </div>
+</div>
+
+</body>
+</html>
