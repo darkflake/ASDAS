@@ -1,0 +1,77 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <!--<script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript" src="/main.js"></script>-->
+
+    <script src="/eel.js"></script>
+    <script>
+<!--FOR LOADING IMAGE-->
+    async function image_load(img)
+    {
+    var imagescr=ee.show_image();
+    if(img.src!=imagescr)
+    {
+    img.src=imagescr;
+    }
+    <!--let value=await eel.show_image()();
+    }-->
+    </script>
+
+    <script>
+    async function date_time()
+    {
+    let value=await eel.date()();
+    }
+    date_time()
+     </script>
+
+    <style >
+           body {
+                   background-color: aliceblue;
+                 }
+     </style>
+
+</head>
+
+<body>
+<h1> <center>LAND CLASSIFICATION</center> </h1>
+
+<!--FOR PRINTING STRING-->
+         <script >
+              async function say_hello_js()
+              {
+               let value=await eel.say_hello_py()();
+              }
+        </script></br>
+
+<!--FOR SINGLE DATE-->
+        <br><center>DATA OF WHICH DAY YOU WANT TO OBSERVE</center></br>
+        <form action="/action_page.php" >
+        <label for="DATE"><center>Date:</label>
+          <input type="date" id="birthday" name="birthday">
+          <input type="submit" value="Submit">
+        </form></br>
+    </center>
+
+<!--FOR TIME SPAN-->
+    <br><center>ENTER TIME SPAN</center></br>
+
+    <form action="/action_page.php" >
+        <label for="DATE"><center>Date:</label>
+          <input type="date" id="birthday" name="birthday"><p>to</p><input type="date" id="birthday" name="birthday">
+          <input type="submit" value="Submit">
+                        </center>
+    </form>
+
+<!--FOR LOADING IMAGE-->
+         <button onclick="image_load()">click to get image</button>
+         <img src="javascript:image_load();" />
+
+        <image onload="image_load(this)"/>
+</body>
+</html>
+
