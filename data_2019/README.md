@@ -10,13 +10,13 @@ Automated Satellite Data Analysis System
   * Band 4 : Red - 10m
   * Band 8 : NIR - 10m
   * Band 11 : SWIR - 20m ( resampled to 10m)
-* Platform : [Google Earth Engine](https://code.earthengine.google.com/?scriptPath=users%2Fshubhamverma3542_gis%2Fgis%3Adata_for_dtw)
 * Data Points count :
- * Forests : 723
- * Water : 1266
- * Agriculture : 738
- * BarrenLand : 1130
- * Infrastructe : 810
+  * Forests : 723
+  * Water : 1266
+  * Agriculture : 738
+  * BarrenLand : 1130
+  * Infrastructe : 810
+* Platform : [Google Earth Engine](https://code.earthengine.google.com/?scriptPath=users%2Fshubhamverma3542_gis%2Fgis%3Adata_for_dtw)
 
 ---
 
