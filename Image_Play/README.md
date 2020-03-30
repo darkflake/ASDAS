@@ -9,4 +9,5 @@ Automated Satellite Data Analysis System
 
 These files are built for using a .tiff image and processing them. The output image is then displayed on the screen by using the package tkinter.
 These files are created for use, if required, later on.
+
 ---
