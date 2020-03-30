@@ -186,6 +186,7 @@ def trainer(input_data: pd.DataFrame, name_of_class: str, name_of_band: str):
     print(f"Pickled ! ")
     return distance_ends
 
+
 # _____________________________________
 
 
@@ -245,9 +246,30 @@ def tester(test: pd.DataFrame, training_data_label: str = None):
     return data_frame
 
 
+def calculate_90_percentile():
+    bands = ['NDVI', 'NDWI', 'NDBI']
+    classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
+    threshold_dictionary = {}
+
+    for band in bands:
+        for label in classes:
+            pickled_dict = unpickler(name_of_class=label, name_of_band=band)
+            sorted_distances = sorted(pickled_dict['distances list'])
+            index = 0.9 * (len(sorted_distances) + 1)
+            threshold_dictionary['label'] = (index % 1) * (sorted_distances[int(index + 1)] - sorted_distances[int(index)]) \
+                                            + sorted_distances[int(index)]
+            print(f"threshold : {threshold_dictionary['label']}")
+
+        filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{band}/thresholds.dat"
+        outfile = open(filename, 'wb')
+        pickle.dump(threshold_dictionary, outfile)
+        outfile.close()
+        print(f"pickled for  : {band}")
+
+
+calculate_90_percentile()
+
 # _____________________________________
-
-
 # Play:
 
 # class_name, index_of_pixel, band_name, csv_data = main.preprocess()
@@ -269,35 +291,32 @@ def tester(test: pd.DataFrame, training_data_label: str = None):
 # tested_csv = tester(csv_data['preprocessed'], training_data_label=class_name)
 # print(tested_csv)
 
-# TRAINING ENTIRE DATASET FOR 2019
-
-total_ends = []
-
-bands = ['NDVI', 'NDWI', 'NDBI']
-classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
-
-labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
-                      '02 Oct',
-                      '01 Nov', '01 Dec']
-indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
-
-for band in bands:
-    for label in classes:
-        input_csv = pd.read_csv(
-            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{label}/preprocessed_{band}.csv")
-
-        total_ends.append(trainer(input_data=input_csv, name_of_class=label, name_of_band=band))
-
-print(total_ends)
-
-plt.xlabel('2019')
-plt.ylabel(f'Band Values ')
-plt.title(f"DTW Curve Comparison")
-
-plt.xticks(indexes, labels, rotation=20)
-plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
-
-for pair in total_ends:
-    plt.plot(pair[0], pair[1], '--bo', alpha=1)
-
-plt.show()
+# plt.xlabel('NDVI (distance from GC)')
+# plt.ylabel(f'NDBI (distance from GC)')
+# fig, ax = plt.subplots()
+#
+# bands = ['NDVI', 'NDBI']
+# classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
+# color = ['green', 'blue', 'yellow', 'brown', 'black']
+#
+# ndvi = []
+# ndwi = []
+#
+# for label in classes:
+#     for band in bands:
+#         pickled_dict = unpickler(name_of_class=label, name_of_band=band)
+#         if band == 'NDVI':
+#             ndvi.append(pickled_dict['distances list'])
+#         else:
+#             ndwi.append(pickled_dict['distances list'])
+#
+# for index in range(0, len(ndvi)):
+#     ax.scatter(ndvi[index], ndwi[index], label=classes[index], color=color[index])
+#
+# ax.legend()
+# plt.tight_layout()
+# plt.title(f"Scatter Plot - NDVI x NDWI")
+# plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+# plt.xlabel('NDVI')
+# plt.ylabel('NDWI')
+# plt.show()
