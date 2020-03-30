@@ -9,7 +9,14 @@ Automated Satellite Data Analysis System
 * [Pillow](https://pypi.org/project/Pillow/)
 * [OpenCV](https://opencv-python-tutroals.readthedocs.io/en/latest/index.html)
 * [Numpy](https://numpy.org/)
-* [Tkinter](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [Eel](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [Scipy](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [Numpy](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [Pandas](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [FastDTW](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [Matplotlib](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [Selenium](https://www.geeksforgeeks.org/python-gui-tkinter/)
+* [Pynput](https://www.geeksforgeeks.org/python-gui-tkinter/)
 
 ---
 
