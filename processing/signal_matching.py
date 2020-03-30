@@ -173,14 +173,18 @@ def trainer(input_data: pd.DataFrame, name_of_class: str, name_of_band: str):
     :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
     :return: None
     """
+    distance_ends = []
     print(f"Training on : {name_of_class} - {name_of_band}")
     generalized_curve = get_average_curve(input_data)
     distances = apply_dtw(template=generalized_curve, test=input_data, single_pixel=False,
                           display=False)
+    distance_ends.append(min(distances))
+    distance_ends.append(max(distances))
+
     pickler(generalized_curve=generalized_curve, distances_list=distances, name_of_class=name_of_class,
             name_of_band=name_of_band)
     print(f"Pickled ! ")
-
+    return distance_ends
 
 # _____________________________________
 
@@ -246,7 +250,7 @@ def tester(test: pd.DataFrame, training_data_label: str = None):
 
 # Play:
 
-class_name, index_of_pixel, band_name, csv_data = main.preprocess()
+# class_name, index_of_pixel, band_name, csv_data = main.preprocess()
 
 
 # pickled_dictionary = unpickler(name_of_class="Forests", name_of_band="NDWI")
@@ -262,19 +266,38 @@ class_name, index_of_pixel, band_name, csv_data = main.preprocess()
 #  TRAINING THE DTW
 # trainer(input_data['preprocessed'], class_name, band_name)
 
-tested_csv = tester(csv_data['preprocessed'], training_data_label=class_name)
-print(tested_csv)
+# tested_csv = tester(csv_data['preprocessed'], training_data_label=class_name)
+# print(tested_csv)
 
-'''
-TRAINING ENTIRE DATASET FOR 2019
+# TRAINING ENTIRE DATASET FOR 2019
+
+total_ends = []
 
 bands = ['NDVI', 'NDWI', 'NDBI']
 classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
+
+labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
+                      '02 Oct',
+                      '01 Nov', '01 Dec']
+indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
 
 for band in bands:
     for label in classes:
         input_csv = pd.read_csv(
             os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{label}/preprocessed_{band}.csv")
 
-        trainer(input_data=input_csv, name_of_class=label, name_of_band=band)
-'''
+        total_ends.append(trainer(input_data=input_csv, name_of_class=label, name_of_band=band))
+
+print(total_ends)
+
+plt.xlabel('2019')
+plt.ylabel(f'Band Values ')
+plt.title(f"DTW Curve Comparison")
+
+plt.xticks(indexes, labels, rotation=20)
+plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+
+for pair in total_ends:
+    plt.plot(pair[0], pair[1], '--bo', alpha=1)
+
+plt.show()
