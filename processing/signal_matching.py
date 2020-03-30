@@ -22,37 +22,10 @@ def get_average_curve(input_csv: pd.DataFrame):
     """
 
     general_copy = input_csv.copy()
-    min_copy = input_csv.copy()
-    max_copy = input_csv.copy()
-
     average_series = general_copy.mean()
-    min_series = min_copy.min()
-    max_series = max_copy.max()
-
     generalised = pd.DataFrame(average_series).transpose()
-    minimised = pd.DataFrame(min_series).transpose()
-    maximised = pd.DataFrame(max_series).transpose()
 
-    labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
-              '02 Oct',
-              '01 Nov', '01 Dec']
-    indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
-
-    plt.plot(generalised.values.tolist()[0][2:], '-g', label='general', alpha=1)
-    plt.plot(minimised.values.tolist()[0][2:], '-r', label=f'min', alpha=0.5)
-    plt.plot(maximised.values.tolist()[0][2:], '-b', label=f'max', alpha=0.5)
-
-    plt.xlabel('2019')
-    plt.ylabel(f'Band Values ')
-    plt.title(f"DTW Curve Comparison")
-
-    plt.xticks(indexes, labels, rotation=20)
-    plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
-    plt.legend()
-
-    plt.show()
-
-    return generalised, minimised, maximised
+    return generalised
 
 
 # _____________________________________
@@ -140,9 +113,9 @@ def calculate_threshold(distance_list: list, test_distance: float):
 
     rank = sum(i < test_distance for i in temp_data_list)
     percentile = (rank * 100) / len(distance_list)
-    print(
-        f"Distance = {test_distance}. "
-        f"\t|\tPERCENTILE : {percentile}")
+    # print(
+    #     f"Distance = {test_distance}. "
+    #     f"\t|\tPERCENTILE : {percentile}")
 
     return percentile
 
@@ -201,7 +174,7 @@ def trainer(input_data: pd.DataFrame, name_of_class: str, name_of_band: str):
     :return: None
     """
     print(f"Training on : {name_of_class} - {name_of_band}")
-    generalized_curve, minimised, maximised = get_average_curve(input_data)
+    generalized_curve = get_average_curve(input_data)
     distances = apply_dtw(template=generalized_curve, test=input_data, single_pixel=False,
                           display=False)
     pickler(generalized_curve=generalized_curve, distances_list=distances, name_of_class=name_of_class,
@@ -223,16 +196,19 @@ def tester(test: pd.DataFrame, training_data_label: str = None):
     bands = ['NDVI', 'NDWI', 'NDBI']
     classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
 
+    start_time = time.time()
     if training_data_label:
         data_frame = combiner.create_new_csv(name_of_class=training_data_label, get_geo_df=True)
         for index, rows in test.iterrows():
+            print(f"++++++ ROW = {index} ======  time : {round(time.time() - start_time, 2)}s +++++++++++")
             for band in bands:
                 for label in classes:
                     pickled_dict = unpickler(name_of_class=label, name_of_band=band)
-                    test_distance, test_path = apply_dtw(template=pickled_dict['general curve'], test=rows[2:],
+                    test_distance, test_path = apply_dtw(template=pickled_dict['general curve'],
+                                                         test=pd.DataFrame(rows).transpose(), single_pixel=True,
                                                          display=False)
                     percentile = calculate_threshold(pickled_dict['distances list'], test_distance=test_distance)
-
+                    print(f"Calculated for : {label} - {band}")
                     if f"{band}_{label}" in data_frame.columns:
                         data_frame.loc[index, f"{band}_{label}"] = percentile
 
@@ -286,7 +262,7 @@ class_name, index_of_pixel, band_name, csv_data = main.preprocess()
 #  TRAINING THE DTW
 # trainer(input_data['preprocessed'], class_name, band_name)
 
-tested_csv = tester(csv_data['preprocessed'].iloc[[0]], training_data_label=None)
+tested_csv = tester(csv_data['preprocessed'], training_data_label=class_name)
 print(tested_csv)
 
 '''
