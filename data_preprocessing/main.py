@@ -36,10 +36,9 @@ def get_data():
     name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
     name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
     pixel_index = int(input("Pixel Index : "))
-    # name_of_class = 'NDVI'
+    # name_of_class = 'Forests'
     # name_of_band = 'NDVI'
-    # pixel_index = 0
-
+    # pixel_index = 554
     input_csv = pd.read_csv(
         os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
@@ -197,16 +196,15 @@ def preprocess():
 # _____________________________________________________________________________________________________________________
 # Play:
 
-# preprocess()
+#preprocess()
 # interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',
 #                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
 #
-# class_name, band_name, index, csv = get_data()
+# class_name, index, band, csv = preprocess()
 # get_cloud_dates(pixel_index=index, naem_of_class = class_name)
 # interpolated_data, filtered_data = perform(csv)
 #
-# display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=True, apply_filter=False,
-#         interpolate_points=get_cloud_dates(pixel_index=index, input_data=csv))
+# display(input_data=csv['preprocessed'], pixel_index=index, name_of_band=band, do_interpolate=False, apply_filter=False)
 
 '''
 FOR WHOLE RAW DATA : 
