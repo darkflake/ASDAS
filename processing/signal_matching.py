@@ -91,7 +91,7 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
             plt.xlabel('Pixels')
             plt.ylabel('Distance')
             plt.title('DTW Distances comparison')
-            plt.axhline(y=2.00)
+            plt.axhline(y=pixel_index, label='threshold')
             plt.show()
 
         return distance_list
@@ -256,9 +256,10 @@ def calculate_90_percentile():
             pickled_dict = unpickler(name_of_class=label, name_of_band=band)
             sorted_distances = sorted(pickled_dict['distances list'])
             index = 0.9 * (len(sorted_distances) + 1)
-            threshold_dictionary['label'] = (index % 1) * (sorted_distances[int(index + 1)] - sorted_distances[int(index)]) \
+            threshold_dictionary[label] = (index % 1) * (
+                        sorted_distances[int(index + 1)] - sorted_distances[int(index)]) \
                                             + sorted_distances[int(index)]
-            print(f"threshold : {threshold_dictionary['label']}")
+            print(f"threshold : {threshold_dictionary[label]}")
 
         filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{band}/thresholds.dat"
         outfile = open(filename, 'wb')
@@ -267,20 +268,25 @@ def calculate_90_percentile():
         print(f"pickled for  : {band}")
 
 
-calculate_90_percentile()
-
 # _____________________________________
 # Play:
 
 # class_name, index_of_pixel, band_name, csv_data = main.preprocess()
-
-
+#
 # pickled_dictionary = unpickler(name_of_class="Forests", name_of_band="NDWI")
-# general_curve, minimised, maximised = get_average_curve(csv_data['preprocessed'])
-
+# general_curve = get_average_curve(csv_data['preprocessed'])
+#
+# file_name = os.path.abspath(
+#                 __file__ + "/../../") + f"/data_2019/Pickles/{band_name}/thresholds.dat"
+#
+# infile = open(file_name, 'rb')
+# new_dict = pickle.load(infile)
+# infile.close()
 #
 # testing_distance, testing_path = apply_dtw(general_curve, test=csv_data['preprocessed'],
-#                                           display=True, single_pixel=True)
+#                                            display=True, single_pixel=True, pixel_index=index_of_pixel)
+
+# calculate_90_percentile()
 
 # print(testing_distance)
 # percentile_value = calculate_threshold(pickled_dictionary['distances list'], test_distance=testing_distance)
