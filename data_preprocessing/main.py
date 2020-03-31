@@ -38,7 +38,7 @@ def get_data():
     pixel_index = int(input("Pixel Index : "))
     # name_of_class = 'Forests'
     # name_of_band = 'NDVI'
-    # pixel_index = 0
+    # pixel_index = 0 
     input_csv = pd.read_csv(
         os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
