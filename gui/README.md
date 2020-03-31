@@ -6,11 +6,11 @@ Automated Satellite Data Analysis System
   * HTML5
   * CSS 
   * JS
-  * Python-Eel framework
+  * [Python-Eel framework](https://pypi.org/project/Eel/)
 * Functionalities :
   * Manipulate settings for image rendering
   * Classification Metrics 
-  * Geo-metrics
+  * LULC-metrics
   * Changes over time
 
 ---
