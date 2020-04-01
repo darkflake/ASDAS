@@ -1,3 +1,7 @@
+[![Anaconda-Server Badge](https://anaconda.org/simply/venv_sih/badges/version.svg)](https://anaconda.org/simply/venv_sih)
+[![Anaconda-Server Badge](https://anaconda.org/simply/venv_sih/badges/platforms.svg)](https://anaconda.org/simply/venv_sih)
+[![Anaconda-Server Badge](https://anaconda.org/simply/venv_sih/badges/installer/env.svg)]()
+
 # ASDAS
 Automated Satellite Data Analysis System
 
