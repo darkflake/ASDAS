@@ -23,8 +23,7 @@ Automated Satellite Data Analysis System
 Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019 is available [here (x64)](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
 
-#### Using [Anaconda Environment Manager](https://www.anaconda.com/distribution/) is preferred for dependency management.
-#### Required Anaconda Channels :
+#### [Anaconda Environment Manager](https://www.anaconda.com/distribution/) for dependency management, with following Anaconda Channels :
 * menpo
 * conda-forge
 * bioconda
