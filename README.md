@@ -19,11 +19,15 @@ Automated Satellite Data Analysis System
 * [Tensorflow](https://numpy.org/)
 * [Tensorboard](https://numpy.org/)
 
-> Using [Anaconda Environment Manager](https://www.anaconda.com/distribution/) is preferred for dependency management.
-> #### Required Anaconda Channels :
-> * menpo
-> * conda-forge
-> * bioconda
+
+Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019 is available [here (x64)](https://aka.ms/vs/16/release/vc_redist.x64.exe)
+
+
+#### Using [Anaconda Environment Manager](https://www.anaconda.com/distribution/) is preferred for dependency management.
+#### Required Anaconda Channels :
+* menpo
+* conda-forge
+* bioconda
 
 > [Pre-build conda virtual-environment](https://anaconda.org/simply/venv_sih) is available on Anaconda Cloud.
 
