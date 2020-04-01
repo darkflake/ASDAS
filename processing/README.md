@@ -15,7 +15,7 @@ The main processing module of the project. Performs different algorithms for sat
   > This can be done between a template and a single curve or between a template and dataset of curves. In case, comparison is done between
   two single curves, the graph renders a line graph with connection between most similar points. If the dataset of curves is passed, 
   a bar plot denoting distance between every curve and template is rendered.
-* Calculating _ simple threshold_ :
+* Calculating _simple threshold_ :
   > The distance calculated from applying `FastDTW` on two curves is compared with the list of distances obtained by testing dataset. 
   The percentile of that distance amongst all the distances denotes its _ simple threshold_.
 * Calculating _90 percentile threshold_ :
