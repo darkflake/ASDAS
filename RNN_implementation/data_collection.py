@@ -19,13 +19,13 @@ def create_csv():
 def refactor_csv():
     temp_df = pd.read_csv('DL_data.csv')
     final_df = pd.DataFrame()
-    final_df['NDVI'] = (temp_df['B8']-temp_df['B4'])/(temp_df['B8']+temp_df['B4'])
+    '''final_df['NDVI'] = (temp_df['B8']-temp_df['B4'])/(temp_df['B8']+temp_df['B4'])
     final_df['MNDWI'] = (temp_df['B3']-temp_df['B11'])/(temp_df['B3']+temp_df['B11'])
     final_df['NDBI'] = (temp_df['B11']-temp_df['B8'])/(temp_df['B11']+temp_df['B8'])
     final_df['Label'] = temp_df['Label']
     final_df = final_df.sample(frac=1)
-    final_df.to_csv('FinalData.csv', index=False)
-
-refactor_csv()
-
+    final_df.to_csv('FinalData.csv', index=False)'''
+    final_df = temp_df[['B11','B2','B3','B4','B8','Label']]
+    final_df = final_df.sample(frac=1)
+    final_df.to_csv('FinalData_band.csv', index=False)
 
