@@ -33,12 +33,12 @@ def get_months(input_data: pd.DataFrame):
 
 
 def get_data():
-    name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
-    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
-    pixel_index = int(input("Pixel Index : "))
-    # name_of_class = 'Forests'
-    # name_of_band = 'NDVI'
-    # pixel_index = 0 
+    # name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
+    # name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
+    # pixel_index = int(input("Pixel Index : "))
+    name_of_class = 'Forests'
+    name_of_band = 'NDVI'
+    pixel_index = 0
     input_csv = pd.read_csv(
         os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
