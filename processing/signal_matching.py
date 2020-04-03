@@ -210,8 +210,8 @@ def tester(test: dict, training_data_label: str = None):
     # start_time = time.time()
     if training_data_label:
         percentile_data_frame = combiner.create_new_csv(name_of_class=training_data_label, get_geo_df=True)
-        threshold_data_frame = combiner.create_new_csv(name_of_class=training_data_label, get_geo_df=True)
-        distance_data_frame = combiner.create_new_csv(name_of_class=training_data_label, get_geo_df=True)
+        threshold_data_frame = percentile_data_frame.copy()
+        distance_data_frame = percentile_data_frame.copy()
 
         for band in bands:
             for index, rows in test[band].iterrows():
@@ -248,8 +248,8 @@ def tester(test: dict, training_data_label: str = None):
 
     else:
         percentile_data_frame = test['NDVI'].filter(['Lat', 'Long'], axis=1)
-        distance_data_frame = test['NDVI'].filter(['Lat', 'Long'], axis=1)
-        threshold_data_frame = test['NDVI'].filter(['Lat', 'Long'], axis=1)
+        distance_data_frame = percentile_data_frame.copy()
+        threshold_data_frame = percentile_data_frame.copy()
 
         for band in bands:
             for label in classes:
@@ -266,14 +266,11 @@ def tester(test: dict, training_data_label: str = None):
                 else:
                     threshold_status = 0
 
-                percentile_data_frame[f"{band}_{label}"] = ""
-                percentile_data_frame.loc[0, f"{band}_{label}"] = percentile
+                percentile_data_frame[f"{band}_{label}"] = percentile
 
-                distance_data_frame[f"{band}_{label}"] = ""
-                distance_data_frame.loc[0, f"{band}_{label}"] = test_distance
+                distance_data_frame[f"{band}_{label}"] = test_distance
 
-                threshold_data_frame[f"{band}_{label}"] = ""
-                threshold_data_frame.loc[0, f"{band}_{label}"] = threshold_status
+                threshold_data_frame[f"{band}_{label}"] = threshold_status
 
     analysis = {'percentile': percentile_data_frame, 'distance': distance_data_frame, 'threshold': threshold_data_frame}
     print(" - x - ")
@@ -328,7 +325,6 @@ class_name, index_of_pixel, band_name, csv_data = main.preprocess()
 # TESTING THE DTW
 indices = csv_data['index files']
 indices_single_pixel = create_single_pixel_df(indices, index_of_pixel)
-
 testing_analysis = tester(indices_single_pixel)
 
 print("\nDISTANCES :")
@@ -337,6 +333,38 @@ print("\nTHRESHOLD STATUS :")
 print(testing_analysis['threshold'].to_string())
 print("\nPERCENTILE :")
 print(testing_analysis['percentile'].to_string())
+
+# To Display :
+threshold_list = []
+bands = ['NDVI', 'NDWI', 'NDBI']
+for band in bands:
+    threshold_values = unpickler(name_of_band=band, threshold=True)
+    threshold_list.extend(threshold_values.values())
+
+distances = testing_analysis['distance'].values.tolist()[0][2:]
+names = testing_analysis['distance'].columns.tolist()[2:]
+
+color = []
+
+for index, value in enumerate(distances):
+    if value < threshold_list[index]:
+        color.append('g')
+    else:
+        color.append('r')
+
+
+fig, ax = plt.subplots()
+
+ax.stem(np.asarray([i for i in range(15)]), np.asarray(threshold_list), linefmt='k--', markerfmt='k.', use_line_collection=True)
+ax.bar(np.arange(15), distances, 0.3, color=color)
+
+plt.xticks(np.arange(15), names, rotation=20, fontsize=8)
+plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+plt.xlabel('Curves ')
+plt.ylabel('Distance ')
+plt.title("Testing Analysis")
+plt.ylim([0, 50])
+plt.show()
 
 # pickled_dictionary = unpickler(name_of_class="Forests", name_of_band="NDWI")
 # general_curve = get_average_curve(csv_data['preprocessed'])
