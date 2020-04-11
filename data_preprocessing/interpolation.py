@@ -92,7 +92,7 @@ def graph(data_y, title='Data', band="", interpolated_data=None, savgol=False):
     plt.xlabel('2019')
     plt.ylabel(f'Band Value ({band})')
     plt.title(f"Pixel: {title}")
-    # plt.ylim([-0.3, 1])
+    plt.ylim([-0.2, 1])
 
     plt.xticks(indexes, labels, rotation=20)
     plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)

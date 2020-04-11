@@ -42,7 +42,7 @@ def get_data():
     input_csv = pd.read_csv(
         os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
-    return name_of_class, name_of_band, pixel_index, fix_nan(input_csv)
+    return name_of_class, name_of_band, pixel_index, input_csv
 
 
 # _____________________________________
@@ -84,7 +84,8 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
     :return: None
     """
     print(
-        f"Min value : {min(input_data.values.tolist()[pixel_index][2:])} , Max value : {max(input_data.values.tolist()[pixel_index][2:])}")
+        f"Min value : {min(input_data.values.tolist()[pixel_index][2:])} , "
+        f"Max value : {max(input_data.values.tolist()[pixel_index][2:])}")
 
     if do_interpolate:
         interpolate(input_data=input_data.values.tolist()[pixel_index][2:], display=True, apply_filter=apply_filter,
@@ -164,7 +165,7 @@ def preprocess():
 
     class_name, band_name, pixel_index, input_data = get_data()
 
-    preprocessed = {'Original': input_data}
+    preprocessed = {'original': input_data}
 
     try:
         working_csv = pd.read_csv(
@@ -202,17 +203,30 @@ def preprocess():
 
 # _____________________________________________________________________________________________________________________
 # Play:
+'''
+name_of_class, index, name_of_band, csv_data = preprocess()
 
-#preprocess()
-# interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',
-#                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
-#
-# class_name, index, band, csv = preprocess()
-# get_cloud_dates(pixel_index=index, naem_of_class = class_name)
-# interpolated_data, filtered_data = perform(csv)
-#
-# display(input_data=csv['preprocessed'], pixel_index=index, name_of_band=band, do_interpolate=False, apply_filter=False)
+interpolating_dates = get_cloud_dates(pixel_index=index, name_of_class=name_of_class)
 
+interpolated_data = apply_interpolation(csv_data['original'], index=index, interpolation_points=interpolating_dates)
+
+display(input_data=csv_data['original'], pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+display(input_data=csv_data['original'], pixel_index=index, name_of_band=name_of_band, do_interpolate=True,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+display(input_data=interpolated_data, pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+display(input_data=interpolated_data, pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=True)
+
+display(input_data=csv_data['preprocessed'], pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+
+'''
 '''
 FOR WHOLE RAW DATA : 
 
