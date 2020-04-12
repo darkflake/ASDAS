@@ -33,13 +33,12 @@ def get_months(input_data: pd.DataFrame):
 
 
 def get_data():
-    name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
-    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
-    pixel_index = int(input("Pixel Index : "))
-    # name_of_class = 'NDVI'
-    # name_of_band = 'NDVI'
-    # pixel_index = 0
-
+    # name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
+    # name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
+    # pixel_index = int(input("Pixel Index : "))
+    name_of_class = 'Forests'
+    name_of_band = 'NDVI'
+    pixel_index = 0
     input_csv = pd.read_csv(
         os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
 
@@ -168,14 +167,14 @@ def preprocess():
     preprocessed = {'Original': input_data}
 
     try:
-        preprocessed_csv = pd.read_csv(
+        working_csv = pd.read_csv(
             os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
 
     except FileNotFoundError as e:
         no_nan_csv = fix_nan(input_data)
         working_csv = no_nan_csv.copy()
 
-        for index in range(0, len(no_nan_csv.index)):
+        for index in range(0, len(working_csv.index)):
             interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
 
             interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
@@ -186,27 +185,33 @@ def preprocess():
             working_csv = filtered_csv
             print(f"Done For : {index}")
 
-        preprocessed['preprocessed'] = filtered_csv
         write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
-        return class_name, pixel_index, band_name, preprocessed
 
-    preprocessed['preprocessed'] = preprocessed_csv
+    preprocessed['preprocessed'] = working_csv
+
+    index_files = {}
+    bands = ['NDVI', 'NDWI', 'NDBI']
+    for band in bands:
+        index_files[band] = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band}.csv")
+
+    preprocessed['index files'] = index_files
+
     return class_name, pixel_index, band_name, preprocessed
 
 
 # _____________________________________________________________________________________________________________________
 # Play:
 
-# preprocess()
+#preprocess()
 # interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',
 #                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
 #
-# class_name, band_name, index, csv = get_data()
+# class_name, index, band, csv = preprocess()
 # get_cloud_dates(pixel_index=index, naem_of_class = class_name)
 # interpolated_data, filtered_data = perform(csv)
 #
-# display(input_data=csv, pixel_index=index, name_of_band=band_name, do_interpolate=True, apply_filter=False,
-#         interpolate_points=get_cloud_dates(pixel_index=index, input_data=csv))
+# display(input_data=csv['preprocessed'], pixel_index=index, name_of_band=band, do_interpolate=False, apply_filter=False)
 
 '''
 FOR WHOLE RAW DATA : 
