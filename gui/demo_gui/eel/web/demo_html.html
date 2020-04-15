@@ -8,7 +8,6 @@
     <script type="text/javascript" src="/main.js"></script>-->
 
     <script src="/eel.js"></script>
-    <script src="demo_js.js"></script>
 
 <!--BACKGROUND COLOR-->
     <style>
@@ -27,25 +26,46 @@
 
         piechart_js();
     </script>
+<style>
+   .center,form{
+  background-color: lightgrey;
+  width: 200px;
+  border: 5px solid green;
+  padding: 50px;
+  margin: 20px;
+}
+
+#date{
+width:200px;
+height:50px;
+}
+
+#date option{
+width:200px;
+}
+
+</style>
+
 </head>
 
 
 
 <body>
-
+<center>
 <p>Select date from given drop down list:</p>
 
 <label >Choose a date:</label>
 
 <form action="/action_page.php">
-<select id="date"  onchange="window.open(this.options[this.selectedIndex].value);">>
+<select name="choose date" id="date"  onchange="window.open(this.options[this.selectedIndex].value);">>
   <option value="eth.png" >10/2/2018</option>
   <option value="walpaper.jpg">11/3/2018</option>
   <option value="day3">12/4/2018</option>
   <option value="day4">13/5/2018</option>
 </select>
 </form>
-
+</center>
 </body>
+
 </html>
 
