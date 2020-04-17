@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import time
 
 from data_preprocessing.interpolation import interpolate, graph, apply_interpolation
 from data_preprocessing.savitsky_golay import apply_savgol
@@ -171,7 +170,7 @@ def preprocess():
         working_csv = pd.read_csv(
             os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
 
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         no_nan_csv = fix_nan(input_data)
         working_csv = no_nan_csv.copy()
 
