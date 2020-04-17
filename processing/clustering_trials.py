@@ -1,14 +1,41 @@
 from data_preprocessing import main
 from processing.signal_matching import unpickler, create_single_pixel_df, apply_dtw, get_average_curve
+from processing import kmeans_config
+from processing import patternizer
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.spatial.distance import cdist
+import pandas as pd
 
 from tslearn.metrics import soft_dtw, dtw_path, gamma_soft_dtw, cdist_dtw
 from tslearn.barycenters import dtw_barycenter_averaging, dtw_barycenter_averaging_petitjean, softdtw_barycenter
 from tslearn.clustering import TimeSeriesKMeans
-import fastdtw
+
+# list1 = [[0, 0], [1, 1], [2, 2], [3, 3]]
+# list2 = [[0, 0]]
+#
+# other_centers = [center for center in list1 if center not in list2]
+# print(other_centers)
+# exit()
+
+
+# dict1 = {'a': 10, 'b': 2}
+# dict2 = {'a': 1, 'b': 20}
+# df1 = pd.DataFrame.from_dict(dict1, orient='index')
+# df2 = pd.DataFrame.from_dict(dict2, orient='index')
+#
+# df1 = pd.concat([df1, df2], axis=1)
+# print(sum(df1.values.tolist()[0]))
+#
+# print(df1)
+# exit()
+
+# y = np.array([5, 30, 20, 10, 40, 50, 100, 50])
+# my_colors = ['brown','pink', 'red', 'green', 'blue', 'cyan','orange','purple']
+# plt.bar(range(len(y)), y, color=my_colors)
+# plt.legend()
+# plt.show()
+# exit()
 
 unpickled = unpickler(name_of_band='NDVI', name_of_class='Forests')
 
@@ -16,16 +43,21 @@ class_name, index_of_pixel, band_name, csv_data = main.preprocess()
 
 indices = csv_data['index files']
 pixel_1 = create_single_pixel_df(indices, index_of_pixel)['NDVI']
-pixel_10 = create_single_pixel_df(indices, index_of_pixel+100)['NDVI']
-pixel_50 = create_single_pixel_df(indices, index_of_pixel+500)['NDVI']
-pixel_100 = create_single_pixel_df(indices, index_of_pixel+700)['NDVI']
-
+pixel_10 = create_single_pixel_df(indices, index_of_pixel + 100)['NDVI']
+pixel_50 = create_single_pixel_df(indices, index_of_pixel + 500)['NDVI']
+pixel_100 = create_single_pixel_df(indices, index_of_pixel + 700)['NDVI']
 
 combined = pixel_1.append(pixel_10, ignore_index=True)
 combined = combined.append(pixel_50, ignore_index=True)
 combined = combined.append(pixel_100, ignore_index=True)
 
-general = get_average_curve(combined).values.tolist()[0][2:]
+
+maxed, chosen_cluster = patternizer.patternizer(input_data=combined, label='forest', display=True)
+print(maxed)
+print(chosen_cluster.cluster_count)
+exit()
+
+general = get_average_curve(combined).values.tolist()[0]
 
 color_dict = {0: 'r', 1: 'g', 2: 'b'}
 
@@ -54,47 +86,69 @@ dataset = []
 for i in range(0, 4):
     dataset.append(list(combined.values.tolist()[i][2:]))
 
-km = TimeSeriesKMeans(n_clusters=3, metric="dtw",
-                      metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3}, verbose=1).fit(dataset)
+# columns = combined.columns
+# new_df = pd.DataFrame(dataset, columns=columns[2:])
+#
+# print(combined)
+# print(dataset)
+# print(new_df)
+# exit()
 
-km_labels = km.predict(dataset)
-print(km_labels)
-print(km.inertia_)
-print(km.n_iter_)
+# dtw_bary_2 = dtw_barycenter_averaging(dataset[1:4],
+#                                       metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
+#                                       max_iter=3)
 
-plt.plot(np.asarray(dataset[0]), f'-{color_dict[km_labels[0]]}', label='Test : Pixel 1', alpha=0.3)
-plt.plot(np.asarray(dataset[1]), f'-{color_dict[km_labels[1]]}', label='Test : Pixel 10', alpha=0.3)
-plt.plot(np.asarray(dataset[2]), f'-{color_dict[km_labels[2]]}', label='Test : Pixel 50', alpha=0.3)
-plt.plot(np.asarray(dataset[3]), f'-{color_dict[km_labels[3]]}', label='Test : Pixel 100', alpha=0.3)
+path, tslearn_distance_1 = dtw_path(np.asarray(general), np.asarray(pixel_1), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
+print(path)
+print(tslearn_distance_1)
+exit()
 
-plt.plot(np.asarray(km.cluster_centers_[0]), ':r', label='cluster center 1', alpha=1)
-plt.plot(np.asarray(km.cluster_centers_[1]), ':g', label='cluster center 2', alpha=1)
-plt.plot(np.asarray(km.cluster_centers_[2]), ':b', label='cluster center 2', alpha=1)
+for j in range(3):
+    sil_list = []
+    config_list = []
+    for i in range(2, 4):
+        km = TimeSeriesKMeans(n_clusters=i, metric="dtw",
+                              metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3}).fit(dataset)
+
+        km_labels = km.predict(dataset)
+        print(f"\n\nFor {i} CLusters, DISTRIBUTION : {km_labels}")
+
+        config = kmeans_config.Kmeans_Config(label='Forests', input_data=combined, cluster_count=i,
+                                             data_labels=km_labels)
+        config.visualize()
+        config_list.append(config)
+
+    for configuration in config_list:
+        sil_list.append(configuration.cluster_silhouettes_mean)
+    print("\n================== ## ==================\n")
+
+    print(
+        f"FOR BEST SCORE CHOSE CONFIGURATION WITH == {config_list[sil_list.index(max(sil_list))].cluster_count} CLUSTERS")
 
 
-dtw_bary_1 = dtw_barycenter_averaging(dataset[0], metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
-                                    max_iter=3)
+
+# plt.plot(np.asarray(out_clusters_list[2]), f'--g', label='Test : Pixel 2', alpha=0.5)
+# plt.plot(np.asarray(out_clusters_list[7]), f':g', label='Test : Pixel 7', alpha=0.5)
+#
+# plt.plot(np.asarray(out_clusters_list[3]), f'--b', label='Test : Pixel 3', alpha=0.5)
+# plt.plot(np.asarray(out_clusters_list[8]), f':b', label='Test : Pixel 8', alpha=0.5)
+#
+# plt.plot(np.asarray(out_clusters_list[2]), f'--m', label='Test : Pixel 4', alpha=0.5)
+# plt.plot(np.asarray(out_clusters_list[7]), f':m', label='Test : Pixel 9', alpha=0.5)
+
+# plt.plot(np.asarray(km.cluster_centers_[0]), ':r', label='cluster center 1', alpha=1)
+# plt.plot(np.asarray(km.cluster_centers_[1]), ':g', label='cluster center 2', alpha=1)
 
 
-dtw_bary_2 = dtw_barycenter_averaging(dataset[1:3], metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
-                                    max_iter=3)
+# dtw_bary_1 = dtw_barycenter_averaging(dataset[0], metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
+#                                     max_iter=3)
+#
+#
+# dtw_bary_2 = dtw_barycenter_averaging(dataset[1:4], metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
+#                                     max_iter=3)
 
-dtw_bary_3 = dtw_barycenter_averaging(dataset[3], metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
-                                    max_iter=3)
-
-
-path, distance_10 = dtw_path(dtw_bary_2, np.asarray(pixel_10), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
-path_50, distance_50 = dtw_path(dtw_bary_2, np.asarray(pixel_50), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
-print(f'bary distance : {distance_10} - {distance_50}')
-
-c_path, c_distance_10 = dtw_path(km.cluster_centers_[1], np.asarray(pixel_10), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
-c_path_50, c_distance_50 = dtw_path(km.cluster_centers_[1], np.asarray(pixel_50), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
-print(f'center distance : {c_distance_10} - {c_distance_50}')
 
 #
-plt.plot(np.asarray(dtw_bary_1), f'--{color_dict[km_labels[0]]}', label='DTW-Barycenter for cluster 1', alpha=0.5)
-plt.plot(np.asarray(dtw_bary_2), f'--{color_dict[km_labels[1]]}', label='DTW-Barycenter for cluster 2', alpha=0.5)
-plt.plot(np.asarray(dtw_bary_3), f'--{color_dict[km_labels[3]]}', label='DTW-Barycenter for cluster 3', alpha=0.5)
 plt.legend()
 #
 # for entry in [x for x in path]:
@@ -148,7 +202,8 @@ plt.legend()
 #
 # path, tslearn_distance_1 = dtw_path(np.asarray(general), np.asarray(pixel_1), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
 # d_path, tslearn_distance_10 = dtw_path(np.asarray(general), np.asarray(pixel_10), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
-#
+
+
 # path_bary, tslearn_distance_1_bary = dtw_path(np.asarray(dtw_bary), np.asarray(pixel_1), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
 # d_path_bary, tslearn_distance_10_bary = dtw_path(np.asarray(dtw_bary), np.asarray(pixel_10), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
 #
