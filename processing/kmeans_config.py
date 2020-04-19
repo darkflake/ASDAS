@@ -16,7 +16,7 @@ class Kmeans_Config:
         self.clustered_data_indices = self.get_cluster_indices()
         self.clustered_data_points = self.get_cluster_data()
         self.cluster_dictionary = self.create_clusters()
-        self.cluster_centers = self.get_cluster_centers()
+        self.cluster_centers_thresholds = self.get_cluster_centers()
 
         self.cluster_silhouettes_list, self.cluster_silhouettes_mean = self.get_silhouettes()
 
@@ -66,10 +66,10 @@ class Kmeans_Config:
 
         :return: list with cluster centers in order of instances
         """
-        centers = []
+        centers = {}
         for index in range(self.cluster_count):
             current_cluster = self.cluster_dictionary[index]
-            centers.append(current_cluster.cluster_center)
+            centers[current_cluster.threshold] = current_cluster.cluster_center
         return centers
 
     def compute_intercluster(self):
@@ -81,7 +81,7 @@ class Kmeans_Config:
         """
         for index in range(self.cluster_count):
             current_cluster = self.cluster_dictionary[index]
-            other_centers = [center for center in self.cluster_centers if center not in [current_cluster.cluster_center]]
+            other_centers = [center for center in [x for x in self.cluster_centers_thresholds.values()] if center not in [current_cluster.cluster_center]]
 
             remote_distances = []
             for point in current_cluster.data_points:
