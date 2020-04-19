@@ -18,9 +18,11 @@ from tslearn.clustering import TimeSeriesKMeans
 # print(other_centers)
 # exit()
 
-
+#
 # dict1 = {'a': 10, 'b': 2}
 # dict2 = {'a': 1, 'b': 20}
+# print([x for x in dict1.keys()])
+# exit()
 # df1 = pd.DataFrame.from_dict(dict1, orient='index')
 # df2 = pd.DataFrame.from_dict(dict2, orient='index')
 #
@@ -37,7 +39,7 @@ from tslearn.clustering import TimeSeriesKMeans
 # plt.show()
 # exit()
 
-unpickled = unpickler(name_of_band='NDVI', name_of_class='Forests')
+unpickled = unpickler(name_of_band='NDVI', name_of_class='Infrastructure')
 
 class_name, index_of_pixel, band_name, csv_data = main.preprocess()
 
@@ -51,8 +53,9 @@ combined = pixel_1.append(pixel_10, ignore_index=True)
 combined = combined.append(pixel_50, ignore_index=True)
 combined = combined.append(pixel_100, ignore_index=True)
 
+forest_ndvi = indices['NDVI']
 
-maxed, chosen_cluster = patternizer.patternizer(input_data=combined, label='forest', display=True)
+maxed, chosen_cluster = patternizer.patternizer(input_data=forest_ndvi, label='forest', display=True)
 print(maxed)
 print(chosen_cluster.cluster_count)
 exit()
