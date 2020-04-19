@@ -2,7 +2,7 @@ from threading import Thread
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
+import time
 
 from tslearn.clustering import TimeSeriesKMeans
 from processing import kmeans_config
@@ -21,6 +21,7 @@ def try_configuration(input_data: pd.DataFrame, label: str, cluster_count: int, 
     :return: None
     """
     print(f"Working out config with {cluster_count} clusters.")
+    config_time = time.time()
     if 'Long' in input_data.columns:
         starting_index = 2
     else:
@@ -39,14 +40,17 @@ def try_configuration(input_data: pd.DataFrame, label: str, cluster_count: int, 
                                          data_labels=km_labels)
 
     configurations[index] = config
+    print(f"Done for {cluster_count}")
+    print(f"TIME REQUIRED : {time.time()-config_time}")
 
 
-def get_optimal_configuration(config_list: list, display=False):
+def get_optimal_configuration(config_list: list, label: str = None, display=False):
     r"""
     Get the silhouette scores for every configuration made and perform silhouette analysis. (Higher the score, optimal
     the clustering)
 
     :param config_list: List of configurations on which silhouette analysis will be performed
+    :param label: Label of the class for displaying on graph.
     :param display: Whether or not to display the silhouette scores of various configurations
     :return: Maximum silhouette score and the configuration it belongs to
     """
@@ -64,7 +68,7 @@ def get_optimal_configuration(config_list: list, display=False):
             else:
                 color.append('r')
 
-        bars = plt.bar([x for x in range(2, 5)], silhouettes_list, color=color)
+        bars = plt.bar([x for x in range(2, 7)], silhouettes_list, color=color)
 
         for index, bar in enumerate(bars):
             yval = bar.get_height()
@@ -72,11 +76,11 @@ def get_optimal_configuration(config_list: list, display=False):
 
         plt.xlabel('Cluster Count')
         plt.ylabel('Mean Silhouette Score')
-        plt.xticks([x for x in range(2, 5)])
-        plt.title('Clustering Configurations Comparison')
+        plt.xticks([x for x in range(2, 7)])
+        plt.title(f'Clustering Configurations Comparison. [class {label}]')
         plt.show()
 
-    return max(silhouettes_list), config_list[silhouettes_list.index(max(silhouettes_list))]
+    return config_list[silhouettes_list.index(max(silhouettes_list))]
 
 
 def patternizer(input_data: pd.DataFrame, label: str, display=False):
@@ -89,11 +93,12 @@ def patternizer(input_data: pd.DataFrame, label: str, display=False):
     :param display: Whether or not to display the silhouette scores of various configurations
     :return: Maximum silhouette score and the configuration it belongs to
     """
-    configurations = [None] * 3
-    threads = [None] * 3
+    configurations = [None] * 5
+    threads = [None] * 5
 
     cluster_count = 2
     print("Analysing different configurations.")
+    start_time = time.time()
     for i in range(len(threads)):
         threads[i] = Thread(target=try_configuration, args=(input_data, label, cluster_count, configurations, i))
         threads[i].start()
@@ -101,6 +106,8 @@ def patternizer(input_data: pd.DataFrame, label: str, display=False):
 
     for i in range(len(threads)):
         threads[i].join()
-    max_silhouette, chosen_configuration = get_optimal_configuration(configurations, display=display)
+    print(f"\t\tTOTAL TIME REQUIRED : {time.time()-start_time}")
 
-    return max_silhouette, chosen_configuration
+    chosen_configuration = get_optimal_configuration(configurations, label=label, display=display)
+
+    return chosen_configuration
