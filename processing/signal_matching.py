@@ -1,40 +1,64 @@
 import pickle
 import os
-import time
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.spatial.distance import euclidean
-from fastdtw import fastdtw
-from tslearn.metrics import soft_dtw, dtw_path
+from tslearn.metrics import dtw_path
+from tslearn.barycenters import dtw_barycenter_averaging
 
 from data_preprocessing import main
 from data_preprocessing import combiner
+from processing import patternizer
 
 
-def get_average_curve(input_csv: pd.DataFrame):
+def nd_array_to_list(input_data: np.ndarray):
     r"""
-    Find the generalized curve to represent the class
-
-    :param input_csv: raw class data
-    :return: data points for generalized curve
-
+    Convert a 2D numpy.ndarray (1 x n) into a flat list.
+    :param input_data: np.ndarray to flatten
+    :return: flattened 1D list
     """
-
-    general_copy = input_csv.copy()
-    average_series = general_copy.mean()
-    generalised = pd.DataFrame(average_series).transpose()
-
-    return generalised
+    return [x[0] for x in input_data.tolist()]
 
 
 # _____________________________________
 
 
-def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single_pixel=False, pixel_index: int = 0, fast=True):
+def get_average_curve(input_data: pd.DataFrame):
     r"""
-    Perform FastDTW algorithm on template graph and test graph.
+    Find the generalized curve to represent the sample using DTW-Barycenter Averaging. (The average curve does not
+    contain the geo-referencing data.)
+
+    :param input_data: raw class data
+    :return: data points for generalized curve
+
+    """
+    if 'Long' in input_data.columns:
+        starting_index = 2
+    else:
+        starting_index = 0
+
+    columns = input_data.columns
+    general = []
+
+    for i in range(0, len(input_data)):
+        general.append(list(input_data.values.tolist()[i][starting_index:]))
+
+    generalized = dtw_barycenter_averaging(general,
+                                           metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
+                                           max_iter=3)
+
+    generalized = nd_array_to_list(generalized)
+
+    return pd.DataFrame([generalized], columns=columns[starting_index:])
+
+
+# _____________________________________
+
+
+def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display=False, single_pixel=False, pixel_index: int = 0):
+    r"""
+    Perform DTW algorithm on template graph and test graph.
 
     :param template: DataFrame with ONLY one curve to be used as reference
     :param test: DataFrame with all testing curve data
@@ -44,14 +68,19 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
     :return: Plot, Distance and optimal Path for single pixel | List with distances between reference curve and all test
              curves.
     """
-    template = template.values.tolist()[0][2:]
+    if type(template) == pd.DataFrame:
+        if 'Long' in template.columns:
+            starting_index = 2
+        else:
+            starting_index = 0
+
+        template = template.values.tolist()[0][starting_index:]
 
     if single_pixel:
         test = test.values.tolist()[pixel_index][2:]
-        if fast:
-            distance, path = fastdtw(np.asarray(template), np.asarray(test), dist=euclidean)
-        else:
-            path, distance = dtw_path(np.asarray(template), np.asarray(test), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
+
+        path, distance = dtw_path(np.asarray(template), np.asarray(test), global_constraint="sakoe_chiba",
+                                  sakoe_chiba_radius=3)
 
         if display:
             labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
@@ -72,8 +101,8 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
                 plt.plot(x_value, y_value, '--bo', alpha=0.3)
 
             plt.xlabel('2019')
-            plt.ylabel(f'Band Values ')
-            plt.title(f"DTW Curve Compariso : FAST = {fast}")
+            plt.ylabel('Band Values')
+            plt.title(f"DTW Curve Comparison (DTW : {distance})")
 
             plt.xticks(indexes, labels, rotation=20)
             plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
@@ -86,7 +115,8 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
         distance_list = []
         for row in test.iterrows():
             test = row[1][2:]
-            distance, path = fastdtw(np.asarray(template), np.asarray(test), dist=euclidean)
+            path, distance = dtw_path(np.asarray(template), np.asarray(test), global_constraint="sakoe_chiba",
+                                      sakoe_chiba_radius=3)
             distance_list.append(distance)
             print(f"Done for Data point : {row[0]}")
 
@@ -104,22 +134,19 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display: False, single
 # _____________________________________
 
 
-def calculate_threshold(distance_list: list, test_distance: float):
+def calculate_percentile(distance_list: list, test_distance: float):
     r"""
-    Calculate the threshold of the data list based on the percentile given.
+    Calculate the percentile of the test distance against training distances.
 
-    :param distance_list: Input data list
+    :param distance_list: training distances list
     :param test_distance: Distance of testing curve
-    :return: Value of the percentile of input data
+    :return: Value of the percentile of testing curve
     """
     temp_data_list = distance_list.copy()
     temp_data_list.sort()
 
     rank = sum(i < test_distance for i in temp_data_list)
     percentile = (rank * 100) / len(distance_list)
-    # print(
-    #     f"Distance = {test_distance}. "
-    #     f"\t|\tPERCENTILE : {percentile}")
 
     return percentile
 
@@ -127,188 +154,109 @@ def calculate_threshold(distance_list: list, test_distance: float):
 # _____________________________________
 
 
-def pickler(generalized_curve: pd.DataFrame, distances_list: list, name_of_class: str, name_of_band: str):
+def pickler(content, name_of_class: str, name_of_band: str, content_type: str):
     r"""
-    Creates a pickle file to store Generalized curve and distances_list for that class.
+    Creates a pickle file to store the content for specific class ad band.
 
-    :param generalized_curve: DataFrame with ONLY one curve (Template curve)
-    :param distances_list: List  of DTW distances
+    :param content: Content to be pickled
     :param name_of_class: Class label
     :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
+    :param content_type: 'DTW' / 'all_configurations'
     :return: None
     """
-    dtw_data = {'general curve': generalized_curve, 'distances list': distances_list}
-    filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/DTW_{name_of_class}.dat"
+    filename = None
+
+    if content_type == 'DTW':
+        filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/DTW_{name_of_class}.dat"
+    elif content_type == 'all_configurations':
+        filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/all_configurations.dat"
+
     outfile = open(filename, 'wb')
-    pickle.dump(dtw_data, outfile)
+    pickle.dump(content, outfile)
     outfile.close()
 
 
 # _____________________________________
 
 
-def unpickler(name_of_band: str, name_of_class: str = None, threshold: bool = False):
+def unpickler(name_of_band: str, name_of_class: str):
     r"""
     Function to read DTW data from pickled file.
 
     :param name_of_class: Class label of requested data
     :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
-    :param threshold: Whether to get threshold data or not.
     :return: Dictionary with generalized curve and distances list of training samples
     """
-    if name_of_class:
-        file_name = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/DTW_{name_of_class}.dat"
-
-    elif threshold:
-        file_name = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/thresholds.dat"
+    file_name = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/DTW_{name_of_class}.dat"
 
     infile = open(file_name, 'rb')
-    new_dict = pickle.load(infile)
+    pickled_content = pickle.load(infile)
     infile.close()
 
-    return new_dict
+    return pickled_content
 
 
 # _____________________________________
 
 
-def trainer(input_data: pd.DataFrame, name_of_class: str, name_of_band: str):
+def trainer(input_data: pd.DataFrame, name_of_band: str, name_of_class: str = None):
     r"""
-    Use training data to create a GENERALIZED curve and compute DTW-distances of every curve from it.
-
+    Use training data to apply silhouette analysis on the input_data, choose the optimal configuration of clusters
+    and pickle the configuration.
 
     :param input_data: raw input data
     :param name_of_class: Class label of requested data
     :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
     :return: None
     """
-    distance_ends = []
+
     print(f"Training on : {name_of_class} - {name_of_band}")
 
-    generalized_curve = get_average_curve(input_data)
+    chosen_configuration = patternizer.patternizer(input_data=input_data, label=name_of_class, display=True)
 
-    distances = apply_dtw(template=generalized_curve, test=input_data, single_pixel=False,
-                          display=False)
-
-    pickler(generalized_curve=generalized_curve, distances_list=distances, name_of_class=name_of_class,
-            name_of_band=name_of_band)
+    pickler(content=chosen_configuration, name_of_class=name_of_class, name_of_band=name_of_band, content_type='DTW')
     print(f"Pickled ! ")
-
-    distance_ends.append(min(distances))
-    distance_ends.append(max(distances))
-    return distance_ends
-
 
 # _____________________________________
 
 
-def tester(test: dict, training_data_label: str = None):
+def tester(test: pd.DataFrame):
     r"""
-    Check the percentile of testing curve with generalised curve for every index and every class.
+    Check the testing curve against generalised curve for every index and every class and determine its class
 
-    :param test: Dictionary of DataFrames for each index (NDVI, NDWI, NDBI).
-    :param training_data_label: Class label of data, in case testing is done on training data with known labels.
-    :return: DataFrames with distances from all class based generalized curves, threshold_status and percentile of the
-            data.
+    :param test: The testing data cure (time-series : 73 time-points + 2 geo-reference points)
+    :return: Testing DataFrame with 'label' column appended, distances DataFrame with distances from all the generalised curves.
     """
-    bands = ['NDVI', 'NDWI', 'NDBI']
-    classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
+    bands = ['NDVI']
+    # classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
+    classes = ['Forests', 'Water']
 
-    # start_time = time.time()
-    if training_data_label:
-        percentile_data_frame = combiner.create_new_csv(name_of_class=training_data_label, get_geo_df=True)
-        threshold_data_frame = percentile_data_frame.copy()
-        distance_data_frame = percentile_data_frame.copy()
-
-        for band in bands:
-            for index, rows in test[band].iterrows():
-                # print(f"++++++ ROW = {index} ======  time : {round(time.time() - start_time, 2)}s +++++++++++")
-                for label in classes:
-                    pickled_dict = unpickler(name_of_class=label, name_of_band=band)
-                    test_distance, test_path = apply_dtw(template=pickled_dict['general curve'],
-                                                         test=pd.DataFrame(rows).transpose(), single_pixel=True,
-                                                         display=False)
-
-                    percentile = calculate_threshold(pickled_dict['distances list'], test_distance=test_distance)
-
-                    threshold_dict = unpickler(name_of_band=band, threshold=True)
-                    if test_distance < threshold_dict[label]:
-                        threshold_status = 1
-                    else:
-                        threshold_status = 0
-
-                    # print(f"Calculated for : {label} - {band}")
-                    if f"{band}_{label}" in percentile_data_frame.columns:
-                        percentile_data_frame.loc[index, f"{band}_{label}"] = percentile
-                        distance_data_frame.loc[index, f"{band}_{label}"] = test_distance
-                        threshold_data_frame.loc[index, f"{band}_{label}"] = threshold_status
-
-                    else:
-                        percentile_data_frame[f"{band}_{label}"] = ""
-                        percentile_data_frame.loc[index, f"{band}_{label}"] = percentile
-                        distance_data_frame.loc[index, f"{band}_{label}"] = test_distance
-                        threshold_data_frame.loc[index, f"{band}_{label}"] = threshold_status
-
-        percentile_data_frame["label"] = training_data_label
-        distance_data_frame["label"] = training_data_label
-        threshold_data_frame["label"] = training_data_label
-
-    else:
-        percentile_data_frame = test['NDVI'].filter(['Lat', 'Long'], axis=1)
-        distance_data_frame = percentile_data_frame.copy()
-        threshold_data_frame = percentile_data_frame.copy()
-
-        for band in bands:
-            for label in classes:
-                print(f"{label} - {band}")
-
-                pickled_dict = unpickler(name_of_class=label, name_of_band=band)
-                test_distance, test_path = apply_dtw(template=pickled_dict['general curve'], test=test[band],
-                                                     single_pixel=True, display=False)
-                percentile = calculate_threshold(pickled_dict['distances list'], test_distance=test_distance)
-
-                threshold_dict = unpickler(name_of_band=band, threshold=True)
-                if test_distance < threshold_dict[label]:
-                    threshold_status = 1
-                else:
-                    threshold_status = 0
-
-                percentile_data_frame[f"{band}_{label}"] = percentile
-
-                distance_data_frame[f"{band}_{label}"] = test_distance
-
-                threshold_data_frame[f"{band}_{label}"] = threshold_status
-
-    analysis = {'percentile': percentile_data_frame, 'distance': distance_data_frame, 'threshold': threshold_data_frame}
-    print(" - x - ")
-    return analysis
-
-
-def calculate_90_percentile():
-    bands = ['NDVI', 'NDWI', 'NDBI']
-    classes = ['Forests', 'Water', 'Agriculture', 'BarrenLand', 'Infrastructure']
-    threshold_dictionary = {}
+    test_data_frame = test.filter(['Lat', 'Long'], axis=1)
 
     for band in bands:
         for label in classes:
-            pickled_dict = unpickler(name_of_class=label, name_of_band=band)
+            print(f"Checking {label} configurations")
 
-            sorted_distances = sorted(pickled_dict['distances list'])
+            configuration = unpickler(name_of_class=label, name_of_band=band)
+            threshold_list = [x for x in configuration.cluster_centers_thresholds.keys()]
+            centers_list = [x for x in configuration.cluster_centers_thresholds.values()]
 
-            index = 0.9 * (len(sorted_distances) + 1)
-            threshold_dictionary[label] = (index % 1) * (
-                    sorted_distances[int(index + 1)] - sorted_distances[int(index)]) + sorted_distances[int(index)]
+            for i in range(configuration.cluster_count):
+                test_distance, test_path = apply_dtw(template=centers_list[i], test=test, single_pixel=True, display=False)
 
-            print(f"threshold : {threshold_dictionary[label]}")
+                # if test_distance < threshold_list[i]:
+                test_data_frame[f"{label}_{band}_instance {i}"] = test_distance
 
-        filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{band}/thresholds.dat"
-        outfile = open(filename, 'wb')
-        pickle.dump(threshold_dictionary, outfile)
-        outfile.close()
-        print(f"pickled for  : {band}")
+    test_columns = test_data_frame.columns.tolist()[2:]
+    test_results = test_data_frame.values.tolist()[0][2:]
+    test_label = test_columns[test_results.index(min(test_results))]
+
+    test['label'] = test_label.split('_')[0]
+
+    return test
 
 
-def create_single_pixel_df(input_data: pd.DataFrame, pixel_index: int):
+def create_single_pixel_df(input_data: dict, pixel_index: int):
     r"""
     Creates a DataFrame with only one pixel values.
 
@@ -326,7 +274,60 @@ def create_single_pixel_df(input_data: pd.DataFrame, pixel_index: int):
 
 # _____________________________________
 # Play:
-# class_name, index_of_pixel, band_name, csv_data = main.preprocess()
+
+class_name, index_of_pixel, band_name, csv_data = main.preprocess()
+
+# testing = csv_data['index files']['NDVI']
+# #
+# trainer(input_data=testing, name_of_class='Forests', name_of_band='NDVI')
+
+zero_count = 0
+one_count = 0
+general_count = 0
+
+zero_list = []
+one_list = []
+
+for i in range(1):
+    testing_curve = create_single_pixel_df(csv_data['index files'], pixel_index=i)['NDVI']
+    value = tester(testing_curve)
+
+    if list(value)[-1] == '0':
+        zero_count += 1
+        zero_list.append(general_count)
+    else:
+        one_count += 1
+        one_list.append(general_count)
+    general_count += 1
+
+print(f"ZERO : {zero_count}, ONE : {one_count}")
+
+forest_config = unpickler(name_of_band="NDVI", name_of_class="Forests")
+
+indices = forest_config.clustered_data_indices
+clusters_instances = [x for x in forest_config.cluster_dictionary.keys()]
+clusters_objects = [x for x in forest_config.cluster_dictionary.values()]
+
+for index, instance in enumerate(clusters_instances):
+    print(f'{instance}: {clusters_objects[index].count}')
+
+print('-x-')
+print("ZERO LIST :")
+print(zero_list)
+print("ONE LIST :")
+print(one_list)
+
+
+print('\nNOT INITIALLY ZERO: ')
+print([x for x in zero_list if x not in [x for x in indices[0]]])
+
+print('NOT INITIALLY ONE: ')
+print([x for x in one_list if x not in [x for x in indices[1]]])
+# general_curve = get_average_curve(csv_data['index files']['NDVI'])
+#
+# p, d = apply_dtw(template=general_curve, test=csv_data['index files']['NDVI'], single_pixel=False,
+#                  pixel_index=index_of_pixel, display=True)
+# exit()
 # #
 # pickled_dictionary = unpickler(name_of_class="Forests", name_of_band="NDVI")
 # testing_distance, testing_path = apply_dtw(pickled_dictionary['general curve'], test=csv_data['preprocessed'],
@@ -420,7 +421,7 @@ def create_single_pixel_df(input_data: pd.DataFrame, pixel_index: int):
 # calculate_90_percentile()
 
 # print(testing_distance)
-# percentile_value = calculate_threshold(pickled_dictionary['distances list'], test_distance=testing_distance)
+# percentile_value = calculate_percentile(pickled_dictionary['distances list'], test_distance=testing_distance)
 #
 
 # plt.xlabel('NDVI (distance from GC)')
