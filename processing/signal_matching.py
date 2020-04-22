@@ -1,5 +1,6 @@
 import pickle
 import os
+import time
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,13 +9,13 @@ from tslearn.metrics import dtw_path
 from tslearn.barycenters import dtw_barycenter_averaging
 
 from data_preprocessing import main
-from data_preprocessing import combiner
 from processing import patternizer
 
 
 def nd_array_to_list(input_data: np.ndarray):
     r"""
     Convert a 2D numpy.ndarray (1 x n) into a flat list.
+
     :param input_data: np.ndarray to flatten
     :return: flattened 1D list
     """
@@ -94,7 +95,7 @@ def apply_dtw(template: pd.DataFrame, test: pd.DataFrame, display=False, single_
             for entry in path:
                 y_value = []
                 x_value = []
-                y_value.append(template[entry[0]])
+                y_value.append(template[entry[0]][0])
                 y_value.append(test[entry[1]])
                 x_value.append(entry[0])
                 x_value.append(entry[1])
@@ -154,7 +155,7 @@ def calculate_percentile(distance_list: list, test_distance: float):
 # _____________________________________
 
 
-def pickler(content, name_of_class: str, name_of_band: str, content_type: str):
+def pickler(content, name_of_class: str, name_of_band: str):
     r"""
     Creates a pickle file to store the content for specific class ad band.
 
@@ -164,13 +165,8 @@ def pickler(content, name_of_class: str, name_of_band: str, content_type: str):
     :param content_type: 'DTW' / 'all_configurations'
     :return: None
     """
-    filename = None
 
-    if content_type == 'DTW':
-        filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/DTW_{name_of_class}.dat"
-    elif content_type == 'all_configurations':
-        filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/all_configurations.dat"
-
+    filename = os.path.abspath(__file__ + "/../../") + f"/data_2019/Pickles/{name_of_band}/DTW_{name_of_class}.dat"
     outfile = open(filename, 'wb')
     pickle.dump(content, outfile)
     outfile.close()
@@ -212,9 +208,9 @@ def trainer(input_data: pd.DataFrame, name_of_band: str, name_of_class: str = No
 
     print(f"Training on : {name_of_class} - {name_of_band}")
 
-    chosen_configuration = patternizer.patternizer(input_data=input_data, label=name_of_class, display=True)
+    chosen_configuration = patternizer.patternizer(input_data=input_data, label=name_of_class, display=False)
 
-    pickler(content=chosen_configuration, name_of_class=name_of_class, name_of_band=name_of_band, content_type='DTW')
+    pickler(content=chosen_configuration, name_of_class=name_of_class, name_of_band=name_of_band)
     print(f"Pickled ! ")
 
 # _____________________________________
@@ -229,23 +225,20 @@ def tester(test: pd.DataFrame):
     """
     bands = ['NDVI']
     # classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
-    classes = ['Forests', 'Water']
+    classes = ['Water', 'Forests']
 
     test_data_frame = test.filter(['Lat', 'Long'], axis=1)
 
     for band in bands:
         for label in classes:
-            print(f"Checking {label} configurations")
+            # print(f"Checking {label} configurations")
 
             configuration = unpickler(name_of_class=label, name_of_band=band)
-            threshold_list = [x for x in configuration.cluster_centers_thresholds.keys()]
             centers_list = [x for x in configuration.cluster_centers_thresholds.values()]
 
-            for i in range(configuration.cluster_count):
-                test_distance, test_path = apply_dtw(template=centers_list[i], test=test, single_pixel=True, display=False)
-
-                # if test_distance < threshold_list[i]:
-                test_data_frame[f"{label}_{band}_instance {i}"] = test_distance
+            for index in range(configuration.cluster_count):
+                test_distance, test_path = apply_dtw(template=centers_list[index], test=test, single_pixel=True, display=False)
+                test_data_frame[f"{label}_{band}_instance {index}"] = test_distance
 
     test_columns = test_data_frame.columns.tolist()[2:]
     test_results = test_data_frame.values.tolist()[0][2:]
@@ -253,7 +246,13 @@ def tester(test: pd.DataFrame):
 
     test['label'] = test_label.split('_')[0]
 
-    return test
+    # print(test_columns)
+    # print(test_results)
+    print(test_label)
+
+    return test_label
+
+# _____________________________________
 
 
 def create_single_pixel_df(input_data: dict, pixel_index: int):
@@ -272,57 +271,105 @@ def create_single_pixel_df(input_data: dict, pixel_index: int):
     return single_pixel_csv
 
 
+def dtw_training_pipeline(class_name: str):
+    bands = ["NDVI"]
+
+    start_time = time.time()
+    for band in bands:
+        class_name, index_of_pixel, band_name, csv_data = main.preprocess(class_name=class_name, band_name=band, pixel_index=0)
+        trainer(input_data=csv_data['index files']['NDVI'], name_of_class=class_name, name_of_band=band)
+
+    print(f"\n\n\nMODEL TRAINED FOR CLASS {class_name}")
+    print(f"\t\tTOTAL TIME REQUIRED : {time.time() - start_time}")
 # _____________________________________
+
+
 # Play:
 
-class_name, index_of_pixel, band_name, csv_data = main.preprocess()
+dtw_training_pipeline("Water")
 
+# class_name, index_of_pixel, band_name, csv_data = main.preprocess(class_name="Forests", band_name="NDVI", pixel_index=0)
+#
+# print(class_name)
 # testing = csv_data['index files']['NDVI']
-# #
+# # #
 # trainer(input_data=testing, name_of_class='Forests', name_of_band='NDVI')
-
-zero_count = 0
-one_count = 0
-general_count = 0
-
-zero_list = []
-one_list = []
-
-for i in range(1):
-    testing_curve = create_single_pixel_df(csv_data['index files'], pixel_index=i)['NDVI']
-    value = tester(testing_curve)
-
-    if list(value)[-1] == '0':
-        zero_count += 1
-        zero_list.append(general_count)
-    else:
-        one_count += 1
-        one_list.append(general_count)
-    general_count += 1
-
-print(f"ZERO : {zero_count}, ONE : {one_count}")
-
-forest_config = unpickler(name_of_band="NDVI", name_of_class="Forests")
-
-indices = forest_config.clustered_data_indices
-clusters_instances = [x for x in forest_config.cluster_dictionary.keys()]
-clusters_objects = [x for x in forest_config.cluster_dictionary.values()]
-
-for index, instance in enumerate(clusters_instances):
-    print(f'{instance}: {clusters_objects[index].count}')
-
-print('-x-')
-print("ZERO LIST :")
-print(zero_list)
-print("ONE LIST :")
-print(one_list)
-
-
-print('\nNOT INITIALLY ZERO: ')
-print([x for x in zero_list if x not in [x for x in indices[0]]])
-
-print('NOT INITIALLY ONE: ')
-print([x for x in one_list if x not in [x for x in indices[1]]])
+# exit()
+# zero_count = 0
+# one_count = 0
+# general_count = 0
+#
+# zero_list = []
+# one_list = []
+#
+# for i in range(723):
+#     testing_curve = create_single_pixel_df(csv_data['index files'], pixel_index=i)['NDVI']
+#     tested_label = tester(testing_curve)
+#
+#     if list(value)[-1] == '0':
+#         zero_count += 1
+#         zero_list.append(general_count)
+#     else:
+#         one_count += 1
+#         one_list.append(general_count)
+#     general_count += 1
+#
+# print(f"ZERO : {zero_count}, ONE : {one_count}")
+#
+# curve_203 = create_single_pixel_df(csv_data['index files'], pixel_index=203)['NDVI']
+#
+# forest_config = unpickler(name_of_band="NDVI", name_of_class="Water")
+#
+# color = ['b', 'g']
+# for index, center in enumerate([x for x in forest_config.cluster_centers_thresholds.values()]):
+#     plt.plot(center, f'-{color[index]}', label=f'instance {index}', alpha=1)
+#     distance, path = apply_dtw(center, curve_203, display=True, single_pixel=True)
+#     print(f"DISTANCE FROM {index} : {distance}")
+#
+# indices = forest_config.clustered_data_indices
+# clusters_instances = [x for x in forest_config.cluster_dictionary.keys()]
+# clusters_objects = [x for x in forest_config.cluster_dictionary.values()]
+#
+# for index, instance in enumerate(clusters_instances):
+#     print(f'{instance}: {clusters_objects[index].count}')
+#
+# print('-x-')
+# print("ZERO LIST :")
+# print(zero_list)
+# print("ONE LIST :")
+# print(one_list)
+#
+#
+# print([x for x in indices[0]])
+# print([x for x in indices[1]])
+#
+# print('\nNOT INITIALLY ZERO: ')
+# print([x for x in zero_list if x not in [x for x in indices[0]]])
+#
+# print('NOT INITIALLY ONE: ')
+# print([x for x in one_list if x not in [x for x in indices[1]]])
+# print("++")
+# print(f"Length of zero_list : {len(zero_list)}")
+# print(f"Length of one_list : {len(one_list)}")
+# print(f"Length of INDICE 0 : {len([x for x in indices[0]])}")
+# print(f"Length of INDICE 1 : {len([x for x in indices[1]])}")
+#
+#
+# plt.plot(curve_203.values.tolist()[0][2:], '--k', label='TEST', alpha=1)
+#
+# labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
+#               '02 Oct',
+#               '01 Nov', '01 Dec']
+# indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
+#
+# plt.xlabel('2019')
+# plt.ylabel('Band Values')
+# plt.title(f"Centers comparison")
+#
+# plt.xticks(indexes, labels, rotation=20)
+# plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+# plt.legend()
+# plt.show()
 # general_curve = get_average_curve(csv_data['index files']['NDVI'])
 #
 # p, d = apply_dtw(template=general_curve, test=csv_data['index files']['NDVI'], single_pixel=False,
