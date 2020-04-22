@@ -59,7 +59,26 @@ def get_optimal_configuration(config_list: list, label: str = None, display=Fals
     for config in config_list:
         silhouettes_list.append(config.cluster_silhouettes_mean)
 
+    chosen_configuration = config_list[silhouettes_list.index(max(silhouettes_list))]
+
     if display:
+        plt.figure(1)
+        for index, center in enumerate([x for x in chosen_configuration.cluster_centers_thresholds.values()]):
+            plt.plot(center, label='index')
+        labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
+                  '02 Oct',
+                  '01 Nov', '01 Dec']
+        indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
+
+        plt.xlabel('2019')
+        plt.ylabel('Band Values')
+        plt.title(f"Configuration Centers : [class {label}]")
+
+        plt.xticks(indexes, labels, rotation=20)
+        plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+        plt.legend()
+
+        plt.figure(2)
         color = []
 
         for value in silhouettes_list:
@@ -77,10 +96,10 @@ def get_optimal_configuration(config_list: list, label: str = None, display=Fals
         plt.xlabel('Cluster Count')
         plt.ylabel('Mean Silhouette Score')
         plt.xticks([x for x in range(2, 7)])
-        plt.title(f'Clustering Configurations Comparison. [class {label}]')
+        plt.title(f'Clustering Configurations Comparison : [class {label}]')
         plt.show()
 
-    return config_list[silhouettes_list.index(max(silhouettes_list))]
+    return chosen_configuration
 
 
 def patternizer(input_data: pd.DataFrame, label: str, display=False):
@@ -106,7 +125,7 @@ def patternizer(input_data: pd.DataFrame, label: str, display=False):
 
     for i in range(len(threads)):
         threads[i].join()
-    print(f"\t\tTOTAL TIME REQUIRED : {time.time()-start_time}")
+    print(f"\t\tTOTAL TIME REQUIRED : {time.time()-start_time}\n")
 
     chosen_configuration = get_optimal_configuration(configurations, label=label, display=display)
 
