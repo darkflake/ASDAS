@@ -1,7 +1,6 @@
 from data_preprocessing import main
 from processing.signal_matching import unpickler, create_single_pixel_df, apply_dtw, get_average_curve
-from processing import kmeans_config
-from processing import patternizer
+from processing import kmeans_config, patternizer
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -55,10 +54,12 @@ combined = combined.append(pixel_100, ignore_index=True)
 
 forest_ndvi = indices['NDVI']
 
-maxed, chosen_cluster = patternizer.patternizer(input_data=forest_ndvi, label='forest', display=True)
-print(maxed)
-print(chosen_cluster.cluster_count)
+chosen_cluster = patternizer.patternizer(input_data=forest_ndvi, label='forest', display=True)
 exit()
+#
+# print(maxed)
+# print(chosen_cluster.cluster_count)
+# exit()
 
 general = get_average_curve(combined).values.tolist()[0]
 
@@ -101,22 +102,22 @@ for i in range(0, 4):
 #                                       metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3},
 #                                       max_iter=3)
 
-path, tslearn_distance_1 = dtw_path(np.asarray(general), np.asarray(pixel_1), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
-print(path)
-print(tslearn_distance_1)
-exit()
+# path, tslearn_distance_1 = dtw_path(np.asarray(general), np.asarray(pixel_1), global_constraint="sakoe_chiba", sakoe_chiba_radius=3)
+# print(path)
+# print(tslearn_distance_1)
+# exit()
 
-for j in range(3):
+for j in range(1):
     sil_list = []
     config_list = []
-    for i in range(2, 4):
+    for i in range(2, 3):
         km = TimeSeriesKMeans(n_clusters=i, metric="dtw",
                               metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3}).fit(dataset)
 
         km_labels = km.predict(dataset)
         print(f"\n\nFor {i} CLusters, DISTRIBUTION : {km_labels}")
 
-        config = kmeans_config.Kmeans_Config(label='Forests', input_data=combined, cluster_count=i,
+        config = kmeans_config.Kmeans_Config(config_label="water", input_data=combined, cluster_count=i,
                                              data_labels=km_labels)
         config.visualize()
         config_list.append(config)

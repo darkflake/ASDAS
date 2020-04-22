@@ -11,7 +11,7 @@ class Cluster:
 
         self.cluster_center = self.compute_center()
         self.intracluster = self.center_distance()
-        self.threshold = self.calculate_threshold()
+        # self.threshold = self.calculate_threshold()
 
         self.intercluster = []
         self.silhouette_list = []
