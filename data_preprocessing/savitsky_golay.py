@@ -87,7 +87,6 @@ def apply_savgol(data_csv: pd.DataFrame, index: int, window: int, order: int):
 
     new_data_csv.loc[index] = new_row
 
-    print("Applied Savitsky-Golay.")
     return new_data_csv
 
 # t = np.linspace(-4, 4, 50)

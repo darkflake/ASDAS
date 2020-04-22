@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from datetime import datetime
+import time
 
 
 def create_new_csv(name_of_class: str, get_geo_df=False):
@@ -42,6 +43,9 @@ def combine(name_of_class: str):
     :param name_of_class: Class label of data
     :return: None
     """
+    print(f'== Creating band & index CSVs for class : {name_of_class} ==')
+    start_time = time.time()
+
     create_new_csv(name_of_class=name_of_class)
 
     start_date = 1546580631000
@@ -56,6 +60,7 @@ def combine(name_of_class: str):
     NDBI_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDBI.csv")
     NDWI_csv = pd.read_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDWI.csv")
 
+    print(f"Scanning satellite image feed for year 2019")
     for img in range(1, 74):
         if img > 1:
             start_date = 1546580631000 + (img - 1) * 432000000
@@ -86,7 +91,8 @@ def combine(name_of_class: str):
         NDVI_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDVI.csv", index=False)
         NDBI_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDBI.csv", index=False)
         NDWI_csv.to_csv(os.path.abspath(__file__ + "/../../")+f"/data_2019/csv/{name_of_class}/NDWI.csv", index=False)
-
+    print("Combined!\n")
+    print(f"\t\tTOTAL TIME REQUIRED : {time.time() - start_time}\n")
 
 # PLAY:
 # combine(input("Enter Class :"))

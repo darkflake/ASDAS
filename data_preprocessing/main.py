@@ -1,8 +1,10 @@
 import os
 import pandas as pd
+import time
 
 from data_preprocessing.interpolation import interpolate, graph, apply_interpolation
 from data_preprocessing.savitsky_golay import apply_savgol
+from data_preprocessing import combiner
 
 
 def get_months(input_data: pd.DataFrame):
@@ -32,14 +34,17 @@ def get_months(input_data: pd.DataFrame):
 
 
 def get_data():
-    # name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
-    # name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
-    # pixel_index = int(input("Pixel Index : "))
-    name_of_class = 'Forests'
-    name_of_band = 'NDVI'
-    pixel_index = 0
-    input_csv = pd.read_csv(
-        os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
+    name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
+    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
+    pixel_index = int(input("Pixel Index : "))
+
+    try:
+        input_csv = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")
+    except FileNotFoundError:
+        combiner.combine(name_of_class=name_of_class)
+        input_csv = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")
 
     return name_of_class, name_of_band, pixel_index, input_csv
 
@@ -149,7 +154,7 @@ def get_cloud_dates(pixel_index: int, name_of_class: str):
 # _____________________________________
 
 
-def preprocess():
+def preprocess(class_name=None, band_name=None, pixel_index=None):
     r"""
     Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
     The function calls  get_data() -> checks for stored preprocessed data.
@@ -159,10 +164,25 @@ def preprocess():
     -> Linearly Interpolating between cloud dates.
     -> Applying Savitsky-Golay filter.
 
+    :param: class_name: [Agriculture/BarrenLand/Forests/Infrastructure/Water]
+    :param: band_name: [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI]
+    :param: pixel_index: Index of data point from the dataset
     :return: dictionary with interpolated and filtered DataFrames
     """
+    start_time = time.time()
 
-    class_name, band_name, pixel_index, input_data = get_data()
+    if class_name is None and band_name is None and pixel_index is None:
+        class_name, band_name, pixel_index, input_data = get_data()
+
+    else:
+        try:
+            input_data = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/{band_name}.csv")
+
+        except FileNotFoundError:
+            combiner.combine(name_of_class=class_name)
+            input_data = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/{band_name}.csv")
 
     preprocessed = {'original': input_data}
 
@@ -171,9 +191,12 @@ def preprocess():
             os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
 
     except FileNotFoundError:
+        print("== Data Preprocessing ==")
         no_nan_csv = fix_nan(input_data)
         working_csv = no_nan_csv.copy()
 
+        print("Finding cloud cover intensities for atmospheric correction, \napplying linear interpolation over dates with"
+              "cloud intensities higher than specified threshold. \nThen, applying Savitsky-Golay filter for smoothing.")
         for index in range(0, len(working_csv.index)):
             interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
 
@@ -185,17 +208,19 @@ def preprocess():
             working_csv = filtered_csv
             print(f"Done For : {index}")
 
-        write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
+        write_csv(working_csv, class_name, file_name=f"preprocessed_{band_name}")
+        print("Saved Preprocessed CSVs!\n")
 
     preprocessed['preprocessed'] = working_csv
 
     index_files = {}
-    bands = ['NDVI', 'NDWI', 'NDBI']
+    bands = ['NDVI']
     for band in bands:
         index_files[band] = pd.read_csv(
             os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band}.csv")
 
     preprocessed['index files'] = index_files
+    print(f"\t\tTOTAL TIME REQUIRED : {time.time() - start_time}\n")
 
     return class_name, pixel_index, band_name, preprocessed
 
