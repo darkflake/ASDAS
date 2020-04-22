@@ -6,32 +6,33 @@ import processing.cluster as cluster
 from tslearn.metrics import dtw
 
 
+def get_cluster_indices(data_labels):
+    r"""
+    Get the indices of data points for every cluster instance.
+
+    :return: dictionary with indices list for instance key
+    """
+    clustered_points = defaultdict(list)
+
+    for index, label in enumerate(data_labels):
+        clustered_points[label].append(index)
+
+    return clustered_points
+
+
 class Kmeans_Config:
     def __init__(self, config_label: str, input_data: pd.DataFrame, cluster_count: int, data_labels: list):
         self.label = config_label
-        self.input_data = input_data
-        self.cluster_count = cluster_count
-        self.data_labels = data_labels
+        self.input_data = input_data.drop(['Lat', 'Long'], axis=1, inplace=False)
 
-        self.clustered_data_indices = self.get_cluster_indices()
+        self.cluster_count = cluster_count
+
+        self.clustered_data_indices = get_cluster_indices(data_labels)
         self.clustered_data_points = self.get_cluster_data()
         self.cluster_dictionary = self.create_clusters()
         self.cluster_centers_thresholds = self.get_cluster_centers()
 
         self.cluster_silhouettes_list, self.cluster_silhouettes_mean = self.get_silhouettes()
-
-    def get_cluster_indices(self):
-        r"""
-        Get the indices of data points for every cluster instance.
-
-        :return: dictionary with indices list for instance key
-        """
-        clustered_points = defaultdict(list)
-
-        for index, label in enumerate(self.data_labels):
-            clustered_points[label].append(index)
-
-        return clustered_points
 
     def get_cluster_data(self):
         r"""
@@ -69,7 +70,7 @@ class Kmeans_Config:
         centers = {}
         for index in range(self.cluster_count):
             current_cluster = self.cluster_dictionary[index]
-            centers[current_cluster.threshold] = current_cluster.cluster_center
+            centers[index] = current_cluster.cluster_center
         return centers
 
     def compute_intercluster(self):
