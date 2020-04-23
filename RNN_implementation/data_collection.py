@@ -19,7 +19,7 @@ def create_csv():
 def refactor_csv():
     temp_df = pd.read_csv('DL_data.csv')
     final_df = pd.DataFrame()
-    Label_code = {'Agriculture':0,'BarrenLand':1,'Forests':2,'Infrastructure':3,'Water':4}
+    Label_code = {'0':'Agriculture','1':'BarrenLand','2':'Forests','3':'Infrastructure','4':'Water'}
     '''final_df['NDVI'] = (temp_df['B8']-temp_df['B4'])/(temp_df['B8']+temp_df['B4'])
     final_df['MNDWI'] = (temp_df['B3']-temp_df['B11'])/(temp_df['B3']+temp_df['B11'])
     final_df['NDBI'] = (temp_df['B11']-temp_df['B8'])/(temp_df['B11']+temp_df['B8'])
