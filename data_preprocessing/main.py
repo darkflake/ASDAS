@@ -4,11 +4,13 @@ import time
 
 from data_preprocessing.interpolation import interpolate, graph, apply_interpolation
 from data_preprocessing.savitsky_golay import apply_savgol
+from data_preprocessing import combiner
 
 
 def get_months(input_data: pd.DataFrame):
     r"""
     Get the first capture date of every month and its index in year-long csv.
+
     :param input_data: raw data
     :return: Tuple of labels, Indexes
     """
@@ -33,16 +35,24 @@ def get_months(input_data: pd.DataFrame):
 
 
 def get_data():
-    # name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
-    # name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
-    # pixel_index = int(input("Pixel Index : "))
-    name_of_class = 'Forests'
-    name_of_band = 'NDVI'
-    pixel_index = 0
-    input_csv = pd.read_csv(
-        os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/{name_of_band}.csv")  # Get csv
+    r"""
+    Return the band-CSV for requested band and class
 
-    return name_of_class, name_of_band, pixel_index, fix_nan(input_csv)
+    :return: class_label, band_name, pixel_index, DataFrame
+    """
+    name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
+    name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
+    pixel_index = int(input("Pixel Index : "))
+
+    try:
+        input_csv = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{name_of_class}/{name_of_band}.csv")
+    except FileNotFoundError:
+        combiner.combine(name_of_class=name_of_class)
+        input_csv = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{name_of_class}/{name_of_band}.csv")
+
+    return name_of_class, name_of_band, pixel_index, input_csv
 
 
 # _____________________________________
@@ -84,7 +94,8 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
     :return: None
     """
     print(
-        f"Min value : {min(input_data.values.tolist()[pixel_index][2:])} , Max value : {max(input_data.values.tolist()[pixel_index][2:])}")
+        f"Min value : {min(input_data.values.tolist()[pixel_index][2:])} , "
+        f"Max value : {max(input_data.values.tolist()[pixel_index][2:])}")
 
     if do_interpolate:
         interpolate(input_data=input_data.values.tolist()[pixel_index][2:], display=True, apply_filter=apply_filter,
@@ -98,24 +109,36 @@ def display(input_data: pd.DataFrame, name_of_band: str, pixel_index: int = 0, i
 # _____________________________________
 
 
-def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str):
+def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str, folder: str):
     r"""
     Write the input DataFrame into CSV in Data_2019/CSV folder
+
+    :param folder: train / test
     :param input_data: Input data
     :param name_of_class: Specify class of the data
     :param file_name: Name of file to be saved
     :return: None
     """
-    input_data.to_csv(os.path.abspath(__file__ + "/../../") + f"/data_2019/CSV/{name_of_class}/{file_name}.csv",
-                      index=False)
+    input_data.to_csv(
+        os.path.abspath(__file__ + "/../../") + f"/data_2019/CSV/{folder}/{name_of_class}/{file_name}.csv",
+        index=False)
     print("Data Written")
+
 
 # _____________________________________
 
 
 def get_cloud_dates(pixel_index: int, name_of_class: str):
+    r"""
+    Function to scan the SCL class of given pixel, find out dates for cloud density above certain threshold for every date.
+    However, if there are more than 3 consecutive cloud dates, they are ignored.
+
+    :param pixel_index: index of data point whose cloud dates are to be found
+    :param name_of_class: class label of selected data points
+    :return: list of cloud dates where each pair represent cloud cover between them
+    """
     input_data = pd.read_csv(
-        os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{name_of_class}/SCL.csv")
+        os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{name_of_class}/SCL.csv")
     cloud_dates = []
     count = 0
     row_values = input_data.iloc[pixel_index]
@@ -146,33 +169,60 @@ def get_cloud_dates(pixel_index: int, name_of_class: str):
 
     return cloud_dates
 
+
 # _____________________________________
 
 
-def preprocess():
+def preprocess(class_name=None, band_name=None, pixel_index=None):
     r"""
     Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
-    The function calls  get_data() -> checks for stored preprocessed data.
+    The function calls  get_data() and checks for stored preprocessed data.
     If not found, performs following functions:
     -> Finding and Handling NaN values.
     -> Getting cloud dates - Atmospheric Correction.
     -> Linearly Interpolating between cloud dates.
     -> Applying Savitsky-Golay filter.
 
+    :param: class_name: [Agriculture/BarrenLand/Forests/Infrastructure/Water]
+    :param: band_name: [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI]
+    :param: pixel_index: Index of data point from the dataset
     :return: dictionary with interpolated and filtered DataFrames
     """
+    start_time = time.time()
 
-    class_name, band_name, pixel_index, input_data = get_data()
+    if class_name is None and band_name is None and pixel_index is None:
+        class_name, band_name, pixel_index, input_data = get_data()
 
-    preprocessed = {'Original': input_data}
+    else:
+        try:
+            input_data = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/{band_name}.csv")
+
+            input_test_data = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/test/{class_name}/{band_name}.csv")
+
+        except FileNotFoundError:
+            combiner.combine(name_of_class=class_name)
+            input_data = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/{band_name}.csv")
+
+            input_test_data = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/test/{class_name}/{band_name}.csv")
+
+    preprocessed = {'original': input_data}
 
     try:
         working_csv = pd.read_csv(
-            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band_name}.csv")
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/preprocessed_{band_name}.csv")
 
-    except FileNotFoundError as e:
+    except FileNotFoundError:
+        print("== Data Preprocessing ==")
         no_nan_csv = fix_nan(input_data)
         working_csv = no_nan_csv.copy()
+
+        print(
+            "Finding cloud cover intensities for atmospheric correction, \napplying linear interpolation over dates with "
+            "cloud intensities higher than specified threshold. \nThen, applying Savitsky-Golay filter for smoothing.")
 
         for index in range(0, len(working_csv.index)):
             interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
@@ -185,34 +235,73 @@ def preprocess():
             working_csv = filtered_csv
             print(f"Done For : {index}")
 
-        write_csv(preprocessed['preprocessed'], class_name, file_name=f"preprocessed_{band_name}")
+        write_csv(working_csv, class_name, file_name=f"preprocessed_{band_name}", folder="train")
+        preprocessed['preprocessed'] = working_csv
 
-    preprocessed['preprocessed'] = working_csv
+    try:
+        working_csv = pd.read_csv(
+            os.path.abspath(
+                __file__ + "/../../") + f"/data_2019/csv/test/{class_name}/preprocessed_{band_name}.csv")
+
+    except FileNotFoundError:
+        no_nan_test_csv = fix_nan(input_test_data)
+        working_csv = no_nan_test_csv.copy()
+
+        for index in range(0, len(working_csv.index)):
+            interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
+
+            interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
+                                                   interpolation_points=interpolation_points)
+
+            filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
+
+            working_csv = filtered_csv
+
+    write_csv(working_csv, class_name, file_name=f"preprocessed_{band_name}", folder="test")
+
+    print("Saved Preprocessed CSVs!\n")
 
     index_files = {}
-    bands = ['NDVI', 'NDWI', 'NDBI']
+    bands = ['NDVI']
     for band in bands:
         index_files[band] = pd.read_csv(
-            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{class_name}/preprocessed_{band}.csv")
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/preprocessed_{band}.csv")
 
     preprocessed['index files'] = index_files
+    print(f"\t\tTOTAL TIME REQUIRED FOR preprocessing: {time.time() - start_time}\n")
 
     return class_name, pixel_index, band_name, preprocessed
 
 
 # _____________________________________________________________________________________________________________________
 # Play:
+# classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
+# for class_name in classes:
+#     preprocess(class_name, band_name='NDVI', pixel_index=0)
+'''
+name_of_class, index, name_of_band, csv_data = preprocess(class_name="Forests", band_name="NDVI", pixel_index=0)
 
-#preprocess()
-# interpolation_points = ['2019-06-04', '2019-07-19', '2019-07-19', '2019-08-23', '2019-08-23', '2019-09-22',
-#                         '2019-09-22', '2019-10-02', '2019-10-17', '2019-11-06', '2019-12-11', '2019-12-31']
-#
-# class_name, index, band, csv = preprocess()
-# get_cloud_dates(pixel_index=index, naem_of_class = class_name)
-# interpolated_data, filtered_data = perform(csv)
-#
-# display(input_data=csv['preprocessed'], pixel_index=index, name_of_band=band, do_interpolate=False, apply_filter=False)
+interpolating_dates = get_cloud_dates(pixel_index=index, name_of_class=name_of_class)
 
+interpolated_data = apply_interpolation(csv_data['original'], index=index, interpolation_points=interpolating_dates)
+
+display(input_data=csv_data['original'], pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+display(input_data=csv_data['original'], pixel_index=index, name_of_band=name_of_band, do_interpolate=True,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+display(input_data=interpolated_data, pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+display(input_data=interpolated_data, pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=True)
+
+display(input_data=csv_data['preprocessed'], pixel_index=index, name_of_band=name_of_band, do_interpolate=False,
+        interpolate_points=interpolating_dates, apply_filter=False)
+
+
+'''
 '''
 FOR WHOLE RAW DATA : 
 
