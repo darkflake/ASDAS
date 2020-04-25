@@ -38,9 +38,9 @@ from tslearn.clustering import TimeSeriesKMeans
 # plt.show()
 # exit()
 
-unpickled = unpickler(name_of_band='NDVI', name_of_class='Infrastructure')
+unpickled = unpickler(name_of_band='NDVI', name_of_class='Forests')
 
-class_name, index_of_pixel, band_name, csv_data = main.preprocess()
+class_name, index_of_pixel, band_name, csv_data = main.preprocess(class_name="Forests", band_name="NDVI", pixel_index=0)
 
 indices = csv_data['index files']
 pixel_1 = create_single_pixel_df(indices, index_of_pixel)['NDVI']
@@ -56,7 +56,7 @@ forest_ndvi = indices['NDVI']
 
 chosen_cluster = patternizer.patternizer(input_data=forest_ndvi, label='forest', display=True)
 exit()
-#
+
 # print(maxed)
 # print(chosen_cluster.cluster_count)
 # exit()
@@ -73,15 +73,15 @@ color_dict = {0: 'r', 1: 'g', 2: 'b'}
 
 # exit()
 
-plt.figure(1)
-labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep', '02 Oct', '01 Nov',
-          '01 Dec']
-indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
-plt.xlabel('2019')
-plt.ylabel(f'Band Values ')
-plt.title(f"DTW Curve Comparison")
-plt.xticks(indexes, labels, rotation=20)
-plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+# plt.figure(1)
+# labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep', '02 Oct', '01 Nov',
+#           '01 Dec']
+# indexes = [0, 6, 11, 18, 24, 30, 36, 42, 48, 54, 60, 66]
+# plt.xlabel('2019')
+# plt.ylabel(f'Band Values ')
+# plt.title(f"DTW Curve Comparison")
+# plt.xticks(indexes, labels, rotation=20)
+# plt.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
 
 # plt.plot(np.asarray(general), '--k', label='Mean', alpha=0.5)
 # plt.legend()
@@ -110,7 +110,7 @@ for i in range(0, 4):
 for j in range(1):
     sil_list = []
     config_list = []
-    for i in range(2, 3):
+    for i in range(2, 4):
         km = TimeSeriesKMeans(n_clusters=i, metric="dtw",
                               metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3}).fit(dataset)
 
@@ -119,7 +119,7 @@ for j in range(1):
 
         config = kmeans_config.Kmeans_Config(config_label="water", input_data=combined, cluster_count=i,
                                              data_labels=km_labels)
-        config.visualize()
+        # config.visualize()
         config_list.append(config)
 
     for configuration in config_list:
@@ -128,7 +128,6 @@ for j in range(1):
 
     print(
         f"FOR BEST SCORE CHOSE CONFIGURATION WITH == {config_list[sil_list.index(max(sil_list))].cluster_count} CLUSTERS")
-
 
 
 # plt.plot(np.asarray(out_clusters_list[2]), f'--g', label='Test : Pixel 2', alpha=0.5)
@@ -153,7 +152,7 @@ for j in range(1):
 
 
 #
-plt.legend()
+# plt.legend()
 #
 # for entry in [x for x in path]:
 #     y_value = []
@@ -271,4 +270,4 @@ plt.legend()
 # plt.bar(np.arange(len(ratio)), ratio, width=0.1)
 
 
-plt.show()
+# plt.show()
