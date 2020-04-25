@@ -191,6 +191,23 @@ def unpickler(name_of_band: str, name_of_class: str):
 
     return pickled_content
 
+# _____________________________________
+
+
+def create_single_pixel_df(input_data: dict, pixel_index: int):
+    r"""
+    Creates a DataFrame with only one pixel values.
+
+    :param input_data: Whole DataFrame
+    :param pixel_index: index of pixel chosen
+    :return: DataFrame with 75 values of single pixel
+    """
+    single_pixel_csv = {}
+
+    for key, value in input_data.items():
+        single_pixel_csv[key] = pd.DataFrame(value.loc[pixel_index]).transpose()
+
+    return single_pixel_csv
 
 # _____________________________________
 
@@ -224,8 +241,7 @@ def tester(test: pd.DataFrame):
     :return: Testing DataFrame with 'label' column appended, distances DataFrame with distances from all the generalised curves.
     """
     bands = ['NDVI']
-    # classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
-    classes = ['Water', 'Forests']
+    classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
 
     test_data_frame = test.filter(['Lat', 'Long'], axis=1)
 
@@ -244,31 +260,12 @@ def tester(test: pd.DataFrame):
     test_results = test_data_frame.values.tolist()[0][2:]
     test_label = test_columns[test_results.index(min(test_results))]
 
-    test['label'] = test_label.split('_')[0]
-
     # print(test_columns)
     # print(test_results)
-    print(test_label)
-
+    # print(test_label)
     return test_label
 
 # _____________________________________
-
-
-def create_single_pixel_df(input_data: dict, pixel_index: int):
-    r"""
-    Creates a DataFrame with only one pixel values.
-
-    :param input_data: Whole DataFrame
-    :param pixel_index: index of pixel chosen
-    :return: DataFrame with 75 values of single pixel
-    """
-    single_pixel_csv = {}
-
-    for key, value in input_data.items():
-        single_pixel_csv[key] = pd.DataFrame(value.loc[pixel_index]).transpose()
-
-    return single_pixel_csv
 
 
 def dtw_training_pipeline(class_name: str):
@@ -281,20 +278,52 @@ def dtw_training_pipeline(class_name: str):
 
     print(f"\n\n\nMODEL TRAINED FOR CLASS {class_name}")
     print(f"\t\tTOTAL TIME REQUIRED : {time.time() - start_time}")
+
 # _____________________________________
 
 
+def dtw_testing_pipeline():
+    # classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
+    classes = ['BarrenLand', 'Infrastructure', 'Water']
+
+    for class_label in classes:
+        input_data = pd.read_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_label}/preprocessed_NDVI.csv")
+
+        mismatched_count = 0
+        for index in range(0, len(input_data.index)):
+            testing_df = pd.DataFrame(input_data.iloc[index]).transpose()
+            test_label = tester(testing_df)
+            if test_label.split('_')[0] != class_label:
+                mismatched_count += 1
+                print(f"ACTUAL : {class_label} X PREDICTED : {test_label.split('_')[0]}")
+
+        print(f"FOR CLASS {class_label}, MISMATCHED LABELS : {mismatched_count}")
+        print(f"\t\tACCURACY : {(len(input_data.index) - mismatched_count)*100 / len(input_data.index)}%")
+
+    return True
+
+
+dtw_testing_pipeline()
+
 # Play:
-
-dtw_training_pipeline("Water")
-
-# class_name, index_of_pixel, band_name, csv_data = main.preprocess(class_name="Forests", band_name="NDVI", pixel_index=0)
 #
-# print(class_name)
-# testing = csv_data['index files']['NDVI']
-# # #
-# trainer(input_data=testing, name_of_class='Forests', name_of_band='NDVI')
+# start_main_time = time.time()
+# classes = ['Infrastructure', 'Water']
+# for class_label in classes:
+#     print(f"\t\t-- class {class_label} --")
+#     dtw_training_pipeline(class_name=class_label)
+#
+# print(f"\n\n\t\t NET TIME : {time.time() - start_main_time}s")
+#
 # exit()
+# class_name, index_of_pixel, band_name, csv_data = main.preprocess(class_name="Forests", band_name="NDVI", pixel_index=1000)
+# #
+# # print(class_name)
+# # testing = csv_data['index files']['NDVI']
+# # # #
+# # trainer(input_data=testing, name_of_class='Forests', name_of_band='NDVI')
+# # exit()
 # zero_count = 0
 # one_count = 0
 # general_count = 0
@@ -302,10 +331,10 @@ dtw_training_pipeline("Water")
 # zero_list = []
 # one_list = []
 #
-# for i in range(723):
+# for i in range(300):
 #     testing_curve = create_single_pixel_df(csv_data['index files'], pixel_index=i)['NDVI']
-#     tested_label = tester(testing_curve)
-#
+#     value = tester(testing_curve)
+# # #
 #     if list(value)[-1] == '0':
 #         zero_count += 1
 #         zero_list.append(general_count)
@@ -318,14 +347,14 @@ dtw_training_pipeline("Water")
 #
 # curve_203 = create_single_pixel_df(csv_data['index files'], pixel_index=203)['NDVI']
 #
-# forest_config = unpickler(name_of_band="NDVI", name_of_class="Water")
-#
+# forest_config = unpickler(name_of_band="NDVI", name_of_class="Forests")
+# #
 # color = ['b', 'g']
 # for index, center in enumerate([x for x in forest_config.cluster_centers_thresholds.values()]):
 #     plt.plot(center, f'-{color[index]}', label=f'instance {index}', alpha=1)
-#     distance, path = apply_dtw(center, curve_203, display=True, single_pixel=True)
-#     print(f"DISTANCE FROM {index} : {distance}")
-#
+# #     distance, path = apply_dtw(center, curve_203, display=True, single_pixel=True)
+# #     print(f"DISTANCE FROM {index} : {distance}")
+# plt.show()
 # indices = forest_config.clustered_data_indices
 # clusters_instances = [x for x in forest_config.cluster_dictionary.keys()]
 # clusters_objects = [x for x in forest_config.cluster_dictionary.values()]
@@ -353,7 +382,7 @@ dtw_training_pipeline("Water")
 # print(f"Length of one_list : {len(one_list)}")
 # print(f"Length of INDICE 0 : {len([x for x in indices[0]])}")
 # print(f"Length of INDICE 1 : {len([x for x in indices[1]])}")
-#
+
 #
 # plt.plot(curve_203.values.tolist()[0][2:], '--k', label='TEST', alpha=1)
 #

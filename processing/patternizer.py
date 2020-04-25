@@ -35,6 +35,7 @@ def try_configuration(input_data: pd.DataFrame, label: str, cluster_count: int, 
                           metric_params={"global_constraint": "sakoe_chiba", "sakoe_chiba_radius": 3})
 
     km_labels = km.fit_predict(data)
+    print(f"Performed KMeans Clustering for {cluster_count} Clusters in {time.time() - config_time}s")
 
     config = kmeans_config.Kmeans_Config(config_label=label, input_data=input_data, cluster_count=cluster_count,
                                          data_labels=km_labels)
@@ -64,7 +65,7 @@ def get_optimal_configuration(config_list: list, label: str = None, display=Fals
     if display:
         plt.figure(1)
         for index, center in enumerate([x for x in chosen_configuration.cluster_centers_thresholds.values()]):
-            plt.plot(center, label='index')
+            plt.plot(center, label=f'CENTER : {index}')
         labels = ['05 Jan', '04 Feb', '01 Mar', '05 Apr', '05 May', '04 Jun', '04 Jul', '03 Aug', '02 Sep',
                   '02 Oct',
                   '01 Nov', '01 Dec']
