@@ -269,6 +269,12 @@ def tester(test: pd.DataFrame):
 
 
 def dtw_training_pipeline(class_name: str):
+    r"""
+    Train the class from raw data
+
+    :param class_name: class label for training
+    :return: None
+    """
     bands = ["NDVI"]
 
     start_time = time.time()
@@ -282,32 +288,44 @@ def dtw_training_pipeline(class_name: str):
 # _____________________________________
 
 
-def dtw_testing_pipeline():
-    # classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
-    classes = ['BarrenLand', 'Infrastructure', 'Water']
+def dtw_testing_pipeline(testing_data: pd.DataFrame = None):
+    r"""
+    Run the testing on entire DataFrame. If not provided, runs testing on 'test' data.
 
-    for class_label in classes:
-        input_data = pd.read_csv(
-            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_label}/preprocessed_NDVI.csv")
-
-        mismatched_count = 0
-        for index in range(0, len(input_data.index)):
-            testing_df = pd.DataFrame(input_data.iloc[index]).transpose()
+    :param testing_data: DataFrame to test
+    :return: Input DataFrame with new column 'label' with testing results of every row
+    """
+    if testing_data is not None:
+        for index in range(0, len(testing_data.index)):
+            testing_df = pd.DataFrame(testing_data.iloc[index]).transpose()
             test_label = tester(testing_df)
-            if test_label.split('_')[0] != class_label:
-                mismatched_count += 1
-                print(f"ACTUAL : {class_label} X PREDICTED : {test_label.split('_')[0]}")
+            testing_data.loc[index, 'Label'] = test_label.split('_')[0]
 
-        print(f"FOR CLASS {class_label}, MISMATCHED LABELS : {mismatched_count}")
-        print(f"\t\tACCURACY : {(len(input_data.index) - mismatched_count)*100 / len(input_data.index)}%")
+    else:
+        classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
 
-    return True
+        for class_label in classes:
+            testing_data = pd.read_csv(
+                    os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/test/{class_label}/preprocessed_NDVI.csv")
 
+            mismatched_count = 0
+            for index in range(0, len(testing_data.index)):
+                testing_df = pd.DataFrame(testing_data.iloc[index]).transpose()
+                test_label = tester(testing_df)
+                testing_data.loc[index, 'Label'] = test_label.split('_')[0]
 
-dtw_testing_pipeline()
+                if test_label.split('_')[0] != class_label:
+                    mismatched_count += 1
+                    print(f"ACTUAL : {class_label} X PREDICTED : {test_label.split('_')[0]}")
+
+            print(f"FOR CLASS {class_label}, MISMATCHED LABELS : {mismatched_count}")
+            print(f"\t\tACCURACY : {(len(testing_data.index) - mismatched_count)*100 / len(testing_data.index)}%")
+
+    return testing_data
+
 
 # Play:
-#
+# dtw_testing_pipeline()
 # start_main_time = time.time()
 # classes = ['Infrastructure', 'Water']
 # for class_label in classes:
