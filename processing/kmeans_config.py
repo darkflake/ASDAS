@@ -1,6 +1,8 @@
-import pandas as pd
 import statistics
 from collections import defaultdict
+from threading import Thread
+
+import pandas as pd
 
 import processing.cluster as cluster
 from tslearn.metrics import dtw
@@ -20,6 +22,36 @@ def get_cluster_indices(data_labels):
     return clustered_points
 
 
+def get_cluster_data(indexes_data: dict, data_points: pd.DataFrame, clustered_data_points: dict, label: str):
+    r"""
+    Find the actual data points based on indices
+
+    :param indexes_data: dictionary of data indices with label as key
+    :param data_points: dictionary of whole data points
+    :param clustered_data_points: dictionary to store data points as value
+    :param label: label of associated data index
+    :return: None
+    """
+    points_list = []
+    for index in indexes_data:
+        points_list.append(data_points.values.tolist()[index])
+    clustered_data_points[label] = points_list
+
+
+def create_clusters(data_count: int, clustered_data_points: dict, clusters: dict, label):
+    r"""
+    Create <'Clusters' class object> for a new clusters in configuration.
+
+    :param data_count: count of data points to be allotted for new cluster
+    :param clustered_data_points: dictionary of whole data points
+    :param clusters: dictionary to hold all the clusters
+    :param label: label of associated cluster instance
+    :return: None
+    """
+    new_cluster = cluster.Cluster(data_count=data_count, data_points=clustered_data_points[label], instance=label)
+    clusters[label] = new_cluster
+
+
 class Kmeans_Config:
     def __init__(self, config_label: str, input_data: pd.DataFrame, cluster_count: int, data_labels: list):
         self.label = config_label
@@ -36,29 +68,40 @@ class Kmeans_Config:
 
     def get_cluster_data(self):
         r"""
-        Based on the indices, get the actual data points from input_data.
+        Based on the indices, get the actual data points from input_data. The function implements threading for faster
+        processing.
 
         :return: dictionary with data points for instance key
         """
+        threads = [None] * self.cluster_count
         cluster_data_points = {}
+
         for label, data in self.clustered_data_indices.items():
-            points_list = []
-            for index in data:
-                points_list.append(self.input_data.values.tolist()[index])
-            cluster_data_points[label] = points_list
+            threads[label] = Thread(target=get_cluster_data, args=(data, self.input_data, cluster_data_points, label))
+            threads[label].start()
+
+        for i in range(len(threads)):
+            threads[i].join()
+
         return cluster_data_points
 
     def create_clusters(self):
         r"""
-        Create <'Clusters' class object> for all clusters in configuration.
+        Create <'Clusters' class object> for all clusters in configuration. The function implements threading for faster
+        processing.
 
         :return: dictionary with <'Clusters' class object> for instance key
         """
         clusters = {}
+        threads = [None] * self.cluster_count
+
         for label, data in self.clustered_data_indices.items():
-            new_cluster = cluster.Cluster(data_count=len(data),
-                                          data_points=self.clustered_data_points[label], instance=label)
-            clusters[label] = new_cluster
+            threads[label] = Thread(target=create_clusters, args=(len(data), self.clustered_data_points, clusters, label))
+            threads[label].start()
+
+        for i in range(len(threads)):
+            threads[i].join()
+
         return clusters
 
     def get_cluster_centers(self):
