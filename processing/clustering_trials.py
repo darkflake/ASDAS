@@ -10,6 +10,8 @@ from tslearn.metrics import soft_dtw, dtw_path, gamma_soft_dtw, cdist_dtw
 from tslearn.barycenters import dtw_barycenter_averaging, dtw_barycenter_averaging_petitjean, softdtw_barycenter
 from tslearn.clustering import TimeSeriesKMeans
 
+
+
 # list1 = [[0, 0], [1, 1], [2, 2], [3, 3]]
 # list2 = [[0, 0]]
 #
@@ -40,19 +42,18 @@ from tslearn.clustering import TimeSeriesKMeans
 
 unpickled = unpickler(name_of_band='NDVI', name_of_class='Forests')
 
-class_name, index_of_pixel, band_name, csv_data = main.preprocess(class_name="Forests", band_name="NDVI", pixel_index=0)
+csv_data = main.preprocess(class_name="Forests", band_name="NDVI", folder="train")
 
-indices = csv_data['index files']
-pixel_1 = create_single_pixel_df(indices, index_of_pixel)['NDVI']
-pixel_10 = create_single_pixel_df(indices, index_of_pixel + 100)['NDVI']
-pixel_50 = create_single_pixel_df(indices, index_of_pixel + 500)['NDVI']
-pixel_100 = create_single_pixel_df(indices, index_of_pixel + 700)['NDVI']
+# pixel_1 = create_single_pixel_df(indices, index_of_pixel)['NDVI']
+# pixel_10 = create_single_pixel_df(indices, index_of_pixel + 100)['NDVI']
+# pixel_50 = create_single_pixel_df(indices, index_of_pixel + 500)['NDVI']
+# pixel_100 = create_single_pixel_df(indices, index_of_pixel + 700)['NDVI']
 
-combined = pixel_1.append(pixel_10, ignore_index=True)
-combined = combined.append(pixel_50, ignore_index=True)
-combined = combined.append(pixel_100, ignore_index=True)
+# combined = pixel_1.append(pixel_10, ignore_index=True)
+# combined = combined.append(pixel_50, ignore_index=True)
+# combined = combined.append(pixel_100, ignore_index=True)
 
-forest_ndvi = indices['NDVI']
+forest_ndvi = csv_data['preprocessed']
 
 chosen_cluster = patternizer.patternizer(input_data=forest_ndvi, label='forest', display=True)
 exit()

@@ -162,7 +162,6 @@ def pickler(content, name_of_class: str, name_of_band: str):
     :param content: Content to be pickled
     :param name_of_class: Class label
     :param name_of_band: Blue | Green | Red | NIR | SWIR | NDVI / NDWI / NDBI
-    :param content_type: 'DTW' / 'all_configurations'
     :return: None
     """
 
@@ -279,7 +278,7 @@ def dtw_training_pipeline(class_name: str):
 
     start_time = time.time()
     for band in bands:
-        class_name, index_of_pixel, band_name, csv_data = main.preprocess(class_name=class_name, band_name=band, pixel_index=0)
+        csv_data = main.preprocess(class_name=class_name, band_name=band, folder="train")
         trainer(input_data=csv_data['index files']['NDVI'], name_of_class=class_name, name_of_band=band)
 
     print(f"\n\n\nMODEL TRAINED FOR CLASS {class_name}")
@@ -288,11 +287,12 @@ def dtw_training_pipeline(class_name: str):
 # _____________________________________
 
 
-def dtw_testing_pipeline(testing_data: pd.DataFrame = None):
+def dtw_testing_pipeline(testing_data: pd.DataFrame = None, data_location: str = None):
     r"""
     Run the testing on entire DataFrame. If not provided, runs testing on 'test' data.
 
     :param testing_data: DataFrame to test
+    :param data_location: Location of data to be tested
     :return: Input DataFrame with new column 'label' with testing results of every row
     """
     if testing_data is not None:
@@ -301,12 +301,22 @@ def dtw_testing_pipeline(testing_data: pd.DataFrame = None):
             test_label = tester(testing_df)
             testing_data.loc[index, 'Label'] = test_label.split('_')[0]
 
+    elif data_location is not None and data_location.startswith("ug"):
+        testing_data = main.preprocess(folder=data_location)
+
+        for index in range(0, len(testing_data.index)):
+            testing_df = pd.DataFrame(testing_data.iloc[index]).transpose()
+            test_label = tester(testing_df)
+            testing_data.loc[index, 'Label'] = test_label.split('_')[0]
+
     else:
-        classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
+        if data_location is not None:
+            classes = [data_location]
+        else:
+            classes = ['Agriculture', 'BarrenLand', 'Forests', 'Infrastructure', 'Water']
 
         for class_label in classes:
-            testing_data = pd.read_csv(
-                    os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/test/{class_label}/preprocessed_NDVI.csv")
+            testing_data = main.preprocess(folder='test', class_name=class_label, band_name='NDVI')
 
             mismatched_count = 0
             for index in range(0, len(testing_data.index)):

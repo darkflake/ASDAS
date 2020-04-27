@@ -42,17 +42,16 @@ def get_data():
     """
     name_of_class = input("Select Class [Agriculture/BarrenLand/Forests/Infrastructure/Water] : ")
     name_of_band = input("Band to plot [Blue/Green/Red/NIR/SWIR/SCL / NDVI/NDWI/NDWI] : ")
-    pixel_index = int(input("Pixel Index : "))
 
     try:
         input_csv = pd.read_csv(
             os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{name_of_class}/{name_of_band}.csv")
     except FileNotFoundError:
-        combiner.combine(name_of_class=name_of_class)
+        combiner.combine(name_of_class=name_of_class, folder='train')
         input_csv = pd.read_csv(
             os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{name_of_class}/{name_of_band}.csv")
 
-    return name_of_class, name_of_band, pixel_index, input_csv
+    return name_of_class, name_of_band, input_csv
 
 
 # _____________________________________
@@ -113,15 +112,21 @@ def write_csv(input_data: pd.DataFrame, name_of_class: str, file_name: str, fold
     r"""
     Write the input DataFrame into CSV in Data_2019/CSV folder
 
-    :param folder: train / test
+    :param folder: train / test / ugX : X in 1-5
     :param input_data: Input data
     :param name_of_class: Specify class of the data
     :param file_name: Name of file to be saved
     :return: None
     """
-    input_data.to_csv(
-        os.path.abspath(__file__ + "/../../") + f"/data_2019/CSV/{folder}/{name_of_class}/{file_name}.csv",
-        index=False)
+    if folder == 'train' or folder == "test":
+        input_data.to_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/CSV/{folder}/{name_of_class}/{file_name}.csv",
+            index=False)
+    else:
+        input_data.to_csv(
+            os.path.abspath(__file__ + "/../../") + f"/data_2019/CSV/{folder}/{file_name}.csv",
+            index=False)
+
     print("Data Written")
 
 
@@ -173,7 +178,7 @@ def get_cloud_dates(pixel_index: int, name_of_class: str):
 # _____________________________________
 
 
-def preprocess(class_name=None, band_name=None, pixel_index=None):
+def preprocess(folder: str, class_name=None, band_name=None):
     r"""
     Perform pre-processing on data. ( Handle missing values + Cloud Correction using Interpolation + SavGol filtering )
     The function calls  get_data() and checks for stored preprocessed data.
@@ -190,30 +195,43 @@ def preprocess(class_name=None, band_name=None, pixel_index=None):
     """
     start_time = time.time()
 
-    if class_name is None and band_name is None and pixel_index is None:
-        class_name, band_name, pixel_index, input_data = get_data()
+    if folder.startswith("ug"):
+        unknown_geometry = True
+    else:
+        unknown_geometry = False
+
+    if class_name is None and band_name is None and not unknown_geometry:
+        class_name, band_name, input_data = get_data()
 
     else:
         try:
-            input_data = pd.read_csv(
-                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/{band_name}.csv")
-
-            input_test_data = pd.read_csv(
-                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/test/{class_name}/{band_name}.csv")
+            if unknown_geometry:
+                input_data = pd.read_csv(
+                    os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{folder}/{band_name}.csv")
+            else:
+                input_data = pd.read_csv(
+                    os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{folder}/{class_name}/{band_name}.csv")
 
         except FileNotFoundError:
-            combiner.combine(name_of_class=class_name)
-            input_data = pd.read_csv(
-                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/{band_name}.csv")
+            if unknown_geometry:
+                combiner.combine(name_of_class=class_name, folder=folder)
+                input_data = pd.read_csv(
+                    os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{folder}/{band_name}.csv")
 
-            input_test_data = pd.read_csv(
-                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/test/{class_name}/{band_name}.csv")
+            else:
+                combiner.combine(name_of_class=class_name, folder=folder)
+                input_data = pd.read_csv(
+                    os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{folder}/{class_name}/{band_name}.csv")
 
     preprocessed = {'original': input_data}
 
     try:
-        working_csv = pd.read_csv(
-            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/preprocessed_{band_name}.csv")
+        if unknown_geometry:
+            working_csv = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{folder}/preprocessed_{band_name}.csv")
+        else:
+            working_csv = pd.read_csv(
+                os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/{folder}/{class_name}/preprocessed_{band_name}.csv")
 
     except FileNotFoundError:
         print("== Data Preprocessing ==")
@@ -235,42 +253,14 @@ def preprocess(class_name=None, band_name=None, pixel_index=None):
             working_csv = filtered_csv
             print(f"Done For : {index}")
 
-        write_csv(working_csv, class_name, file_name=f"preprocessed_{band_name}", folder="train")
-        preprocessed['preprocessed'] = working_csv
+        write_csv(working_csv, class_name, file_name=f"preprocessed_{band_name}", folder=folder)
 
-    try:
-        working_csv = pd.read_csv(
-            os.path.abspath(
-                __file__ + "/../../") + f"/data_2019/csv/test/{class_name}/preprocessed_{band_name}.csv")
-
-    except FileNotFoundError:
-        no_nan_test_csv = fix_nan(input_test_data)
-        working_csv = no_nan_test_csv.copy()
-
-        for index in range(0, len(working_csv.index)):
-            interpolation_points = get_cloud_dates(pixel_index=index, name_of_class=class_name)
-
-            interpolated_csv = apply_interpolation(input_data=working_csv, index=index,
-                                                   interpolation_points=interpolation_points)
-
-            filtered_csv = apply_savgol(data_csv=interpolated_csv, index=index, window=7, order=3)
-
-            working_csv = filtered_csv
-
-    write_csv(working_csv, class_name, file_name=f"preprocessed_{band_name}", folder="test")
-
+    preprocessed['preprocessed'] = working_csv
     print("Saved Preprocessed CSVs!\n")
 
-    index_files = {}
-    bands = ['NDVI']
-    for band in bands:
-        index_files[band] = pd.read_csv(
-            os.path.abspath(__file__ + "/../../") + f"/data_2019/csv/train/{class_name}/preprocessed_{band}.csv")
-
-    preprocessed['index files'] = index_files
     print(f"\t\tTOTAL TIME REQUIRED FOR preprocessing: {time.time() - start_time}\n")
 
-    return class_name, pixel_index, band_name, preprocessed
+    return preprocessed
 
 
 # _____________________________________________________________________________________________________________________
